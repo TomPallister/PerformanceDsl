@@ -10,6 +10,7 @@ namespace TestRunner
     {
         private static void Main()
         {
+            var testRunGuid = Guid.NewGuid();
             //assembly to test hardcoded at the moment obs going to be passed in.
             const string assemblyWithTest =
                 @"C:\git\PerformanceDsl\PerformanceDsl.Tests\PerformanceDsl.Tests\bin\Debug\PerformanceDsl.Tests.dll";
@@ -17,7 +18,7 @@ namespace TestRunner
             //load the assembly and get test method, this needs to be dynamic
             Assembly assembly = Assembly.LoadFrom(assemblyWithTest);
             Type[] types = assembly.GetTypes();
-            Sync(types);
+            Sync(types, testRunGuid);
             //Task task = Async(types);
             //task.ContinueWith(x =>
             //{
@@ -27,10 +28,10 @@ namespace TestRunner
             //task.Wait();
         }
 
-        private static void Sync(Type[] types)
+        private static void Sync(Type[] types, Guid guid)
         {
             MethodInfo methodInfo = types[0].GetMethod("SyncTestWebFormsGetAndPost");
-            object classInstance = Activator.CreateInstance(types[0], null);
+            object classInstance = Activator.CreateInstance(types[0], guid);
 
             Stopwatch watch = Stopwatch.StartNew();
             const int numThreads = 50;
