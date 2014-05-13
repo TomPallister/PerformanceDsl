@@ -29,7 +29,7 @@ namespace TestRunner
 
         private static void Sync(Type[] types)
         {
-            MethodInfo methodInfo = types[0].GetMethod("TestWebFormsSyncLogin");
+            MethodInfo methodInfo = types[0].GetMethod("SyncTestWebFormsGetAndPost");
             object classInstance = Activator.CreateInstance(types[0], null);
 
             Stopwatch watch = Stopwatch.StartNew();

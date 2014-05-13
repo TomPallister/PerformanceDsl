@@ -9,8 +9,10 @@ namespace PerformanceDsl.Tests
 {
     public class Tests
     {
-        public void TestWebFormsGetAndPost(string hostUrl)
+        public void SyncTestWebFormsGetAndPost()
         {
+            const string hostUrl = "http://www.testwebformsapp.dev/";
+
             var scenario = new Scenario("Sync Register");
 
             scenario.
@@ -38,9 +40,10 @@ namespace PerformanceDsl.Tests
                 .CheckStatusCodeIs(HttpStatusCode.OK)
                 .Pause(500);
         }
-
-        public void TestMvcGetRequest(string hostUrl)
+        public void SyncTestMvcGetRequest()
         {
+            const string hostUrl = "http://www.testmvcapp.dev/";
+
             var scenario = new Scenario("Sync Get");
 
             scenario.
@@ -49,10 +52,10 @@ namespace PerformanceDsl.Tests
                 .CheckStatusCodeIs(HttpStatusCode.OK)
                 .Pause(500);
         }
-
-
-        public void TestMvcPostRequest(string hostUrl)
+        public void SyncTestMvcPostRequest()
         {
+            const string hostUrl = "http://www.testmvcapp.dev/";
+
             var scenario = new Scenario("Sync Post");
 
             scenario.
