@@ -58,7 +58,7 @@ namespace TestRunner
             MethodInfo methodInfo = types[0].GetMethod("ASyncTestWebFormsGetAndPost");
             object classInstance = Activator.CreateInstance(types[0], guid, logger);
             Stopwatch watch = Stopwatch.StartNew();
-            const int numTasks = 1000;
+            const int numTasks = 300;
             var tasks = new Task[numTasks];
             for (int i = 0; i < numTasks; i++)
             {

@@ -101,5 +101,28 @@ namespace PerformanceDsl.Tests
                 .FormData("ctl00$MainContent$RegisterUser$CreateUserStepContainer$ctl09", "Register")
                 .Post(string.Format("{0}{1}", hostUrl, "Account/Register"));
         }
+
+        public async Task ASyncTestMvcGetRequest()
+        {
+            const string hostUrl = "http://www.testmvcapp.dev/";
+
+            var scenario = new AsyncScenario(string.Format("Sync Register on {0}", DateTime.Now), _logger, _guid);
+
+            await scenario.
+                Exec("Get Values")
+                .Get(string.Format("{0}{1}", hostUrl, "api/values"));
+        }
+
+        public async Task ASyncTestMvcPostRequest()
+        {
+            const string hostUrl = "http://www.testmvcapp.dev/";
+
+            var scenario = new AsyncScenario(string.Format("Sync Register on {0}", DateTime.Now), _logger, _guid);
+
+            await scenario.
+                Exec("Open Home Page")
+                .Json(JsonConvert.SerializeObject("some value"))
+                .Post(string.Format("{0}{1}", hostUrl, "api/values"));
+        }
     }
 }

@@ -14,6 +14,7 @@ namespace PerformanceDsl
         private readonly List<KeyValuePair<string, string>> _formContent;
         private readonly ILogger _logger;
         private readonly AsyncScenario _scenario;
+        private string _json;
 
         public AsyncStep(string stepName, AsyncScenario scenario, string currentEventValidation,
             string currentViewState, CookieContainer container, string currentHtml, ILogger logger, Guid guid)
@@ -34,13 +35,30 @@ namespace PerformanceDsl
             return this;
         }
 
+        public AsyncStep Json(string json)
+        {
+            _json = json;
+            return this;
+        }
+
         public async Task<HttpResponseMessage> Post(string url)
         {
             Url = url;
-            var formContent = new FormUrlEncodedContent(_formContent);
+            HttpContent httpContent = null;
+            if (_formContent.Count > 0)
+            {
+                httpContent = new FormUrlEncodedContent(_formContent);
+            }
+
+            if (!string.IsNullOrWhiteSpace(_json))
+            {
+                httpContent = new StringContent(_json);
+                httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                httpContent.Headers.ContentType = new MediaTypeHeaderValue("text/json");
+            }
             SetUpDefaultHeaders();
             Stopwatch stopWatch = Stopwatch.StartNew();
-            Task<HttpResponseMessage> asyncTask = PostAsync(Url, formContent);
+            Task<HttpResponseMessage> asyncTask = PostAsync(Url, httpContent);
             HttpResponseMessage result = await asyncTask;
             stopWatch.Stop();
             string htmlContent = result.Content.ReadAsStringAsync().Result;
@@ -48,10 +66,6 @@ namespace PerformanceDsl
             if (!string.IsNullOrWhiteSpace(htmlContent))
             {
                 ScrapeAspNetDataFromHtml(htmlContent);
-            }
-            else
-            {
-                throw new Exception("Status code was null");
             }
             SetCurrentHtml(htmlContent);
             Dispose();

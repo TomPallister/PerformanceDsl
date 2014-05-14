@@ -36,10 +36,24 @@ namespace PerformanceDsl.TDD
         }
 
         [Fact]
+        public async Task can_get_from_mvc_app_async()
+        {
+            var tests = new PerformanceDsl.Tests.Tests(Guid.NewGuid(), _logger);
+            await tests.ASyncTestMvcGetRequest();
+        }
+
+        [Fact]
         public void can_post_to_mvc_app_sync()
         {
             var tests = new PerformanceDsl.Tests.Tests(Guid.NewGuid(), _logger);
             tests.SyncTestMvcPostRequest();
+        }
+
+        [Fact]
+        public async Task can_post_to_mvc_app_Async()
+        {
+            var tests = new PerformanceDsl.Tests.Tests(Guid.NewGuid(), _logger);
+            await tests.ASyncTestMvcPostRequest();
         }
     }
 }
