@@ -5,22 +5,31 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using FluentAssertions;
+using PerformanceDsl.Logging;
 
 namespace PerformanceDsl
 {
     public class GetRequest : RequestBase
     {
         protected Step Step;
+        private readonly ILogger _logger;
 
-        public GetRequest(string url, Step step, HttpClientHandler handler, string currentEventValidation,
-            string currentViewState, string currentHtml)
-            : base(handler, currentEventValidation, currentViewState, url, currentHtml)
+        public GetRequest(string url, 
+            Step step, 
+            HttpClientHandler handler, 
+            string currentEventValidation,
+            string currentViewState, 
+            string currentHtml, 
+            ILogger logger,
+            Guid guid)
+            : base(handler, currentEventValidation, currentViewState, url, currentHtml, guid)
         {
             Url = url;
             Step = step;
             CurrentEventValidation = currentEventValidation;
             CurrentViewState = currentViewState;
             CurrentHtml = currentHtml;
+            _logger = logger;
         }
 
         private async Task<HttpResponseMessage> Get()
@@ -33,9 +42,11 @@ namespace PerformanceDsl
             SetUpDefaultHeaders();
             Stopwatch stopWatch = Stopwatch.StartNew();
             Task<HttpResponseMessage> task = Get();
-            string htmlContent = task.Result.Content.ReadAsStringAsync().Result;
+            var result = task.Result;
             stopWatch.Stop();
-            Console.WriteLine("Took {0} Milliseconds", stopWatch.ElapsedMilliseconds);
+            string htmlContent = result.Content.ReadAsStringAsync().Result;
+            _logger.Log(GetType(), "GET", Step.ScenarioName, Url, result, stopWatch.ElapsedMilliseconds, Guid);
+            Console.WriteLine("Get {0}", Url);
             if (!string.IsNullOrWhiteSpace(htmlContent))
             {
                 if (htmlContent.Contains("__EVENTVALIDATION"))

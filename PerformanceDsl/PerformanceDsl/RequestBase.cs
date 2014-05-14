@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 
 namespace PerformanceDsl
 {
@@ -8,15 +9,21 @@ namespace PerformanceDsl
         protected string CurrentHtml;
         protected string CurrentViewState;
         protected string Url;
+        protected Guid Guid;
 
-        public RequestBase(HttpClientHandler handler, string currentEventValidation, string currentViewState, string url,
-            string currentHtml)
+        public RequestBase(HttpClientHandler handler, 
+            string currentEventValidation, 
+            string currentViewState, 
+            string url,
+            string currentHtml,
+            Guid guid)
             : base(handler)
         {
             CurrentEventValidation = currentEventValidation;
             CurrentHtml = currentHtml;
             Url = url;
             CurrentViewState = currentViewState;
+            Guid = guid;
         }
 
         public void ScrapeAspNetDataFromHtml(string html)

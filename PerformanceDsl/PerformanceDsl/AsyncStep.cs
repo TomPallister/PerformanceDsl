@@ -5,25 +5,27 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using PerformanceDsl.Logging;
 
 namespace PerformanceDsl
 {
     public class AsyncStep : RequestBase
     {
         private readonly List<KeyValuePair<string, string>> _formContent;
+        private readonly ILogger _logger;
         private readonly AsyncScenario _scenario;
 
         public AsyncStep(string stepName, AsyncScenario scenario, string currentEventValidation,
-            string currentViewState, CookieContainer container, string currentHtml)
+            string currentViewState, CookieContainer container, string currentHtml, ILogger logger, Guid guid)
             : base(new HttpClientHandler
             {
                 CookieContainer = container,
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-            }, currentEventValidation, currentViewState, null, currentHtml)
+            }, currentEventValidation, currentViewState, null, currentHtml, guid)
         {
             _scenario = scenario;
-            Console.WriteLine(stepName);
             _formContent = new List<KeyValuePair<string, string>>();
+            _logger = logger;
         }
 
         public AsyncStep FormData(string name, string value)
@@ -40,9 +42,9 @@ namespace PerformanceDsl
             Stopwatch stopWatch = Stopwatch.StartNew();
             Task<HttpResponseMessage> asyncTask = PostAsync(Url, formContent);
             HttpResponseMessage result = await asyncTask;
-            string htmlContent = result.Content.ReadAsStringAsync().Result;
             stopWatch.Stop();
-            Console.WriteLine("Took {0} Milliseconds", stopWatch.ElapsedMilliseconds);
+            string htmlContent = result.Content.ReadAsStringAsync().Result;
+            _logger.Log(GetType(), "POST", _scenario.ScenarioName, Url, result, stopWatch.ElapsedMilliseconds, Guid);
             if (!string.IsNullOrWhiteSpace(htmlContent))
             {
                 ScrapeAspNetDataFromHtml(htmlContent);
@@ -64,9 +66,9 @@ namespace PerformanceDsl
             Stopwatch stopWatch = Stopwatch.StartNew();
             Task<HttpResponseMessage> asyncTask = GetAsync(new Uri(Url));
             HttpResponseMessage result = await asyncTask;
-            string htmlContent = result.Content.ReadAsStringAsync().Result;
             stopWatch.Stop();
-            Console.WriteLine("Took {0} Milliseconds", stopWatch.ElapsedMilliseconds);
+            string htmlContent = result.Content.ReadAsStringAsync().Result;
+            _logger.Log(GetType(), "GET", _scenario.ScenarioName, Url, result, stopWatch.ElapsedMilliseconds, Guid);
             if (!string.IsNullOrWhiteSpace(htmlContent))
             {
                 ScrapeAspNetDataFromHtml(htmlContent);

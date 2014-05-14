@@ -2,6 +2,8 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading;
+using FluentAssertions.Formatting;
+using PerformanceDsl.Logging;
 
 namespace PerformanceDsl
 {
@@ -12,30 +14,29 @@ namespace PerformanceDsl
         public string CurrentEventValidation;
         public string CurrentHtml;
         public string CurrentViewState;
-
-        public Step(string stepName, Scenario scenario, CookieContainer container)
-        {
-            _scenario = scenario;
-            _container = container;
-            Console.WriteLine(stepName);
-        }
+        private readonly ILogger _logger;
+        private readonly Guid _guid;
+        private readonly string _scenarioName;
 
         public Step(string stepName, Scenario scenario, string currentEventValidation,
-            string currentViewState, CookieContainer container, string currentHtml)
+            string currentViewState, CookieContainer container, string currentHtml, ILogger logger, Guid guid)
         {
             _scenario = scenario;
-            Console.WriteLine(stepName);
             CurrentEventValidation = currentEventValidation;
             CurrentViewState = currentViewState;
             _container = container;
             CurrentHtml = currentHtml;
+            _logger = logger;
+            _guid = guid;
+            _scenarioName = scenario.ScenarioName;
+
         }
 
-
-        public Step(CookieContainer container)
+        public string ScenarioName
         {
-            _container = container;
+            get { return _scenarioName; }
         }
+
 
         public PostRequest Post(string url)
         {
@@ -45,7 +46,7 @@ namespace PerformanceDsl
                     CookieContainer = _container,
                     AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
                 },
-                CurrentEventValidation, CurrentViewState, CurrentHtml);
+                CurrentEventValidation, CurrentViewState, CurrentHtml, _logger, _guid);
         }
 
         public GetRequest Get(string url)
@@ -56,7 +57,7 @@ namespace PerformanceDsl
                     CookieContainer = _container,
                     AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
                 },
-                CurrentEventValidation, CurrentViewState, CurrentHtml);
+                CurrentEventValidation, CurrentViewState, CurrentHtml, _logger, _guid);
         }
 
         public void Put()

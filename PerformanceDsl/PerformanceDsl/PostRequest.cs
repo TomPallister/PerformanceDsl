@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using FluentAssertions;
+using PerformanceDsl.Logging;
 
 namespace PerformanceDsl
 {
@@ -14,10 +15,17 @@ namespace PerformanceDsl
         private readonly List<KeyValuePair<string, string>> _formContent;
         protected Step Step;
         private string _json;
+        private ILogger _logger;
 
-        public PostRequest(string url, Step step, HttpClientHandler handler, string currentEventValidation,
-            string currentViewState, string currentHtml)
-            : base(handler, currentEventValidation, currentViewState, url, currentHtml)
+        public PostRequest(string url, 
+            Step step, 
+            HttpClientHandler handler, 
+            string currentEventValidation,
+            string currentViewState, 
+            string currentHtml, 
+            ILogger logger,
+            Guid guid)
+            : base(handler, currentEventValidation, currentViewState, url, currentHtml, guid)
         {
             Url = url;
             Step = step;
@@ -25,6 +33,7 @@ namespace PerformanceDsl
             CurrentViewState = currentViewState;
             _formContent = new List<KeyValuePair<string, string>>();
             CurrentHtml = currentHtml;
+            _logger = logger;
         }
 
         public PostRequest FormData(string name, string value)
@@ -61,9 +70,12 @@ namespace PerformanceDsl
             SetUpDefaultHeaders();
             Stopwatch stopWatch = Stopwatch.StartNew();
             Task<HttpResponseMessage> task = Post(httpContent);
-            string htmlContent = task.Result.Content.ReadAsStringAsync().Result;
+            var result = task.Result;
             stopWatch.Stop();
-            Console.WriteLine("Took {0} Milliseconds", stopWatch.ElapsedMilliseconds);
+            string htmlContent = result.Content.ReadAsStringAsync().Result;
+            _logger.Log(GetType(), "POST", Step.ScenarioName, Url, result, stopWatch.ElapsedMilliseconds, Guid);
+            Console.WriteLine("Post {0}", Url);
+
             if (!string.IsNullOrEmpty(htmlContent))
             {
                 if (htmlContent.Contains("__EVENTVALIDATION"))

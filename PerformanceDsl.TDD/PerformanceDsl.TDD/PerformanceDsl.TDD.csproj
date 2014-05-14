@@ -38,6 +38,9 @@
     <Reference Include="FluentAssertions.Core">
       <HintPath>..\..\PerformanceDsl\packages\FluentAssertions.3.0.107\lib\net45\FluentAssertions.Core.dll</HintPath>
     </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\..\PerformanceDsl\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -61,6 +64,10 @@
     <ProjectReference Include="..\..\PerformanceDsl.Tests\PerformanceDsl.Tests\PerformanceDsl.Tests.csproj">
       <Project>{62bc1f9e-36e2-45b5-af46-e329dbc091b9}</Project>
       <Name>PerformanceDsl.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PerformanceDsl\PerformanceDsl\PerformanceDsl.csproj">
+      <Project>{ae1a50d3-c1e4-4325-a647-478bcdfbce88}</Project>
+      <Name>PerformanceDsl</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
