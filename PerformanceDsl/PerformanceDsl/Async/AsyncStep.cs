@@ -5,9 +5,10 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using PerformanceDsl.Common;
 using PerformanceDsl.Logging;
 
-namespace PerformanceDsl
+namespace PerformanceDsl.Async
 {
     public class AsyncStep : RequestBase
     {

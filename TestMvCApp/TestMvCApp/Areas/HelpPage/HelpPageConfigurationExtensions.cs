@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Web.Http;
 using System.Web.Http.Description;
 using TestMvCApp.Areas.HelpPage.Models;
+using TestMvCApp.Areas.HelpPage.SampleGeneration;
 
 namespace TestMvCApp.Areas.HelpPage
 {

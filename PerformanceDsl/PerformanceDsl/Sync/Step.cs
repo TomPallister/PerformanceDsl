@@ -2,10 +2,9 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading;
-using FluentAssertions.Formatting;
 using PerformanceDsl.Logging;
 
-namespace PerformanceDsl
+namespace PerformanceDsl.Sync
 {
     public class Step
     {

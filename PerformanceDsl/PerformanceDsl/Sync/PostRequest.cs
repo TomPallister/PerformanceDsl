@@ -6,9 +6,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using FluentAssertions;
+using PerformanceDsl.Common;
+using PerformanceDsl.Helpers;
 using PerformanceDsl.Logging;
 
-namespace PerformanceDsl
+namespace PerformanceDsl.Sync
 {
     public class PostRequest : RequestBase
     {

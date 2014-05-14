@@ -1,5 +1,6 @@
 using System.Web.Http;
 using System.Web.Mvc;
+using TestMvCApp.Areas.HelpPage.App_Start;
 
 namespace TestMvCApp.Areas.HelpPage
 {

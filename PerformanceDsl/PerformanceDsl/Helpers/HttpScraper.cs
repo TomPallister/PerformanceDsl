@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PerformanceDsl
+namespace PerformanceDsl.Helpers
 {
     public static class HttpScraper
     {

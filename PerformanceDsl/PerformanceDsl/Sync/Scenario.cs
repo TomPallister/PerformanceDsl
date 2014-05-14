@@ -2,9 +2,9 @@
 using System.Net;
 using PerformanceDsl.Logging;
 
-namespace PerformanceDsl
+namespace PerformanceDsl.Sync
 {
-    public class AsyncScenario
+    public class Scenario
     {
         private readonly CookieContainer _cookieContainer;
         public string CurrentEventValidation;
@@ -14,14 +14,13 @@ namespace PerformanceDsl
         private readonly Guid _guid;
         private readonly string _scenarioName;
 
-        public AsyncScenario(string scenarioName, ILogger logger, Guid guid)
+        public Scenario(string scenarioName, ILogger logger, Guid guid)
         {
             _cookieContainer = new CookieContainer();
             _logger = logger;
             _guid = guid;
             _scenarioName = scenarioName;
-            Log4NetLogger.LogEntry(GetType(), "AsyncScenario Constructor", string.Format("starting {0}", _scenarioName), LoggerLevel.Info);
-
+            Log4NetLogger.LogEntry(GetType(), "Scenario Constructor", string.Format("starting {0}", _scenarioName), LoggerLevel.Info);
         }
 
         public string ScenarioName
@@ -29,9 +28,9 @@ namespace PerformanceDsl
             get { return _scenarioName; }
         }
 
-        public AsyncStep Exec(string stepName)
+        public Step Exec(string stepName)
         {
-            return new AsyncStep(stepName, this, CurrentEventValidation, CurrentViewState, _cookieContainer, CurrentHtml, _logger, _guid);
+            return new Step(stepName, this, CurrentEventValidation, CurrentViewState, _cookieContainer, CurrentHtml, _logger, _guid);
         }
     }
 }

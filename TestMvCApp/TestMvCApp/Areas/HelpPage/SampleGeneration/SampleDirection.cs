@@ -1,4 +1,4 @@
-namespace TestMvCApp.Areas.HelpPage
+namespace TestMvCApp.Areas.HelpPage.SampleGeneration
 {
     /// <summary>
     ///     Indicates whether the sample is used for request or response

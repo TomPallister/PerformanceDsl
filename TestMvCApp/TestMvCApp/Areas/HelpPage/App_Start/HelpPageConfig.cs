@@ -1,6 +1,6 @@
 using System.Web.Http;
 
-namespace TestMvCApp.Areas.HelpPage
+namespace TestMvCApp.Areas.HelpPage.App_Start
 {
     /// <summary>
     ///     Use this class to customize the Help Page.

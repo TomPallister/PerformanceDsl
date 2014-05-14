@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Net.Http;
+using PerformanceDsl.Helpers;
 
-namespace PerformanceDsl
+namespace PerformanceDsl.Common
 {
     public class RequestBase : HttpClient
     {

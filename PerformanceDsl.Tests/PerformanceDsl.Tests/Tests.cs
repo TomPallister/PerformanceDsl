@@ -3,6 +3,8 @@ using System.Net;
 using System.Threading.Tasks;
 using log4net.Core;
 using Newtonsoft.Json;
+using PerformanceDsl.Async;
+using PerformanceDsl.Sync;
 
 namespace PerformanceDsl.Tests
 {
