@@ -7,9 +7,6 @@ namespace PerformanceDsl.Async
     public class AsyncScenario
     {
         private readonly CookieContainer _cookieContainer;
-        public string CurrentEventValidation;
-        public string CurrentHtml;
-        public string CurrentViewState;
         private readonly ILogger _logger;
         private readonly Guid _guid;
         private readonly string _scenarioName;
@@ -21,8 +18,11 @@ namespace PerformanceDsl.Async
             _guid = guid;
             _scenarioName = scenarioName;
             Log4NetLogger.LogEntry(GetType(), "AsyncScenario Constructor", string.Format("starting {0}", _scenarioName), LoggerLevel.Info);
-
         }
+
+        public string CurrentEventValidation { get; set; }
+        public string CurrentHtml { get; set; }
+        public string CurrentViewState { get; set; }
 
         public string ScenarioName
         {

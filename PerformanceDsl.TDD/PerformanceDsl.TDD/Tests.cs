@@ -50,7 +50,7 @@ namespace PerformanceDsl.TDD
         }
 
         [Fact]
-        public async Task can_post_to_mvc_app_Async()
+        public async Task can_post_to_mvc_app_async()
         {
             var tests = new PerformanceDsl.Tests.Tests(Guid.NewGuid(), _logger);
             await tests.ASyncTestMvcPostRequest();

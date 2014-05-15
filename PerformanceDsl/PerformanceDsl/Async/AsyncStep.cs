@@ -12,10 +12,9 @@ namespace PerformanceDsl.Async
 {
     public class AsyncStep : RequestBase
     {
-        private readonly List<KeyValuePair<string, string>> _formContent;
         private readonly ILogger _logger;
         private readonly AsyncScenario _scenario;
-        private string _json;
+        private string _stepName;
 
         public AsyncStep(string stepName, AsyncScenario scenario, string currentEventValidation,
             string currentViewState, CookieContainer container, string currentHtml, ILogger logger, Guid guid)
@@ -26,49 +25,37 @@ namespace PerformanceDsl.Async
             }, currentEventValidation, currentViewState, null, currentHtml, guid)
         {
             _scenario = scenario;
-            _formContent = new List<KeyValuePair<string, string>>();
+            FormContent = new List<KeyValuePair<string, string>>();
             _logger = logger;
+            _stepName = stepName;
+            Log4NetLogger.LogEntry(GetType(), "AsyncStep Constructor", string.Format("starting {0}", _stepName), LoggerLevel.Info);
         }
 
         public AsyncStep FormData(string name, string value)
         {
-            _formContent.Add(new KeyValuePair<string, string>(name, value));
+            FormContent.Add(new KeyValuePair<string, string>(name, value));
             return this;
         }
 
         public AsyncStep Json(string json)
         {
-            _json = json;
+            JsonContent = json;
             return this;
         }
 
         public async Task<HttpResponseMessage> Post(string url)
         {
             Url = url;
-            HttpContent httpContent = null;
-            if (_formContent.Count > 0)
-            {
-                httpContent = new FormUrlEncodedContent(_formContent);
-            }
-
-            if (!string.IsNullOrWhiteSpace(_json))
-            {
-                httpContent = new StringContent(_json);
-                httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                httpContent.Headers.ContentType = new MediaTypeHeaderValue("text/json");
-            }
+            SetUpContent();
             SetUpDefaultHeaders();
-            Stopwatch stopWatch = Stopwatch.StartNew();
-            Task<HttpResponseMessage> asyncTask = PostAsync(Url, httpContent);
-            HttpResponseMessage result = await asyncTask;
-            stopWatch.Stop();
-            string htmlContent = result.Content.ReadAsStringAsync().Result;
-            _logger.Log(GetType(), "POST", _scenario.ScenarioName, Url, result, stopWatch.ElapsedMilliseconds, Guid);
-            if (!string.IsNullOrWhiteSpace(htmlContent))
-            {
-                ScrapeAspNetDataFromHtml(htmlContent);
-            }
-            SetCurrentHtml(htmlContent);
+            Stopwatch = Stopwatch.StartNew();
+            Task = PostAsync(Url, HttpContent);
+            HttpResponseMessage result = await Task;
+            Stopwatch.Stop();
+            SetCurrentHtml(result.Content.ReadAsStringAsync().Result);
+            //todo post result to api
+            _logger.Log(GetType(), "POST", _scenario.ScenarioName, Url, result, Stopwatch.ElapsedMilliseconds, Guid);
+            ScrapeAspNetDataFromHtml(CurrentHtml);
             Dispose();
             SetUpScenario();
             return result;
@@ -78,21 +65,14 @@ namespace PerformanceDsl.Async
         {
             Url = url;
             SetUpDefaultHeaders();
-            Stopwatch stopWatch = Stopwatch.StartNew();
-            Task<HttpResponseMessage> asyncTask = GetAsync(new Uri(Url));
-            HttpResponseMessage result = await asyncTask;
-            stopWatch.Stop();
-            string htmlContent = result.Content.ReadAsStringAsync().Result;
-            _logger.Log(GetType(), "GET", _scenario.ScenarioName, Url, result, stopWatch.ElapsedMilliseconds, Guid);
-            if (!string.IsNullOrWhiteSpace(htmlContent))
-            {
-                ScrapeAspNetDataFromHtml(htmlContent);
-            }
-            else
-            {
-                throw new Exception("Status code was null");
-            }
-            SetCurrentHtml(htmlContent);
+            Stopwatch = Stopwatch.StartNew();
+            Task = GetAsync(new Uri(Url));
+            HttpResponseMessage result = await Task;
+            Stopwatch.Stop();
+            SetCurrentHtml(result.Content.ReadAsStringAsync().Result);
+            //todo post result to api
+            _logger.Log(GetType(), "GET", _scenario.ScenarioName, Url, result, Stopwatch.ElapsedMilliseconds, Guid);
+            ScrapeAspNetDataFromHtml(CurrentHtml);
             Dispose();
             SetUpScenario();
             return result;
