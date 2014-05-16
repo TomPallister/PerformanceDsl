@@ -47,14 +47,15 @@ namespace TestRunner
         {
             var classInstance = Activator.CreateInstance(type, guid, logger);
 
-            const int numTasks = 1;
+            const int numTasks = 10;
             var tasks = new Task[methods.Count];
             for (int i = 0; i < methods.Count; i++)
             {
                 tasks[i] = ExecuteTestMethod(methods[i], classInstance, numTasks);
+                tasks[i].Wait();
             }
 
-            await Task.WhenAll(tasks);
+           // await Task.WhenAll(tasks);
 
         }
         private static async Task ExecuteTestMethod(MethodInfo method, object type, int numTasks)
@@ -63,8 +64,10 @@ namespace TestRunner
             for (int i = 0; i < numTasks; i++)
             {
                 tasks[i] = (Task)method.Invoke(type, null);
+                tasks[i].Wait();
+
             }
-            await Task.WhenAll(tasks);
+           // await Task.WhenAll(tasks);
         }
     }
 }
