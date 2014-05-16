@@ -3,18 +3,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using PerformanceDsl.Common;
+using PerformanceDsl.Abstract;
 using PerformanceDsl.Logging;
 
-namespace PerformanceDsl.Async
+namespace PerformanceDsl.Concrete
 {
     public class AsyncStep : RequestBase
     {
         private readonly ILogger _logger;
         private readonly AsyncScenario _scenario;
-        private string _stepName;
 
         public AsyncStep(string stepName, AsyncScenario scenario, string currentEventValidation,
             string currentViewState, CookieContainer container, string currentHtml, ILogger logger, Guid guid)
@@ -22,13 +20,17 @@ namespace PerformanceDsl.Async
             {
                 CookieContainer = container,
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-            }, currentEventValidation, currentViewState, null, currentHtml, guid)
+            },
+                currentEventValidation,
+                currentViewState,
+                currentHtml,
+                guid)
         {
             _scenario = scenario;
             FormContent = new List<KeyValuePair<string, string>>();
             _logger = logger;
-            _stepName = stepName;
-            Log4NetLogger.LogEntry(GetType(), "AsyncStep Constructor", string.Format("starting {0}", _stepName), LoggerLevel.Info);
+            Log4NetLogger.LogEntry(GetType(), "AsyncStep Constructor", string.Format("starting {0}", stepName),
+                LoggerLevel.Info);
         }
 
         public AsyncStep FormData(string name, string value)
@@ -47,7 +49,6 @@ namespace PerformanceDsl.Async
         {
             Url = url;
             SetUpContent();
-            SetUpDefaultHeaders();
             Stopwatch = Stopwatch.StartNew();
             Task = PostAsync(Url, HttpContent);
             HttpResponseMessage result = await Task;
@@ -64,7 +65,6 @@ namespace PerformanceDsl.Async
         public async Task<HttpResponseMessage> Get(string url)
         {
             Url = url;
-            SetUpDefaultHeaders();
             Stopwatch = Stopwatch.StartNew();
             Task = GetAsync(new Uri(Url));
             HttpResponseMessage result = await Task;
@@ -102,23 +102,6 @@ namespace PerformanceDsl.Async
             {
                 _scenario.CurrentHtml = CurrentHtml;
             }
-        }
-
-        private void SetUpDefaultHeaders()
-        {
-            DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
-            DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xhtml+xml"));
-            DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
-            DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("image/webp"));
-            DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
-            DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
-            DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("deflate"));
-            DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("sdch"));
-            DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en-GB"));
-            DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en-US"));
-            DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en"));
-            DefaultRequestHeaders.CacheControl = CacheControlHeaderValue.Parse("no-cache");
-            DefaultRequestHeaders.Pragma.Add(new NameValueHeaderValue("no-cache"));
         }
     }
 }

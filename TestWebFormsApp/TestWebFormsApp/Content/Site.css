@@ -448,7 +448,7 @@ th {
 
 th a {
     display: block;
-    position: relative;        
+    position: relative;
 }
 
 th a:link, th a:visited, th a:active, th a:hover {

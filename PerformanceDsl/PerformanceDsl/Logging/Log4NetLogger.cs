@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Net.Http;
 using log4net;
 using log4net.Config;
 

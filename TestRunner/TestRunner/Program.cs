@@ -14,7 +14,7 @@ namespace TestRunner
         {
             XmlConfigurator.Configure();
             ILogger logger = new Log4NetLog();
-            var testRunGuid = Guid.NewGuid();
+            Guid testRunGuid = Guid.NewGuid();
             //assembly to test hardcoded at the moment obs going to be passed in.
             const string assemblyWithTest =
                 @"C:\git\PerformanceDsl\PerformanceDsl.Tests\PerformanceDsl.Tests\bin\Debug\PerformanceDsl.Tests.dll";

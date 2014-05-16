@@ -15,13 +15,6 @@ namespace PerformanceDsl.TDD
         }
 
         [Fact]
-        public void can_register_user_on_web_forms_app_sync()
-        {
-            var tests = new PerformanceDsl.Tests.Tests(Guid.NewGuid(), _logger);
-            tests.SyncTestWebFormsGetAndPost();
-        }
-
-        [Fact]
         public async Task can_register_user_on_web_forms_app_async()
         {
             var tests = new PerformanceDsl.Tests.Tests(Guid.NewGuid(), _logger);
@@ -29,24 +22,10 @@ namespace PerformanceDsl.TDD
         }
 
         [Fact]
-        public void can_get_from_mvc_app_sync()
-        {
-            var tests = new PerformanceDsl.Tests.Tests(Guid.NewGuid(), _logger);
-            tests.SyncTestMvcGetRequest();
-        }
-
-        [Fact]
         public async Task can_get_from_mvc_app_async()
         {
             var tests = new PerformanceDsl.Tests.Tests(Guid.NewGuid(), _logger);
             await tests.ASyncTestMvcGetRequest();
-        }
-
-        [Fact]
-        public void can_post_to_mvc_app_sync()
-        {
-            var tests = new PerformanceDsl.Tests.Tests(Guid.NewGuid(), _logger);
-            tests.SyncTestMvcPostRequest();
         }
 
         [Fact]
