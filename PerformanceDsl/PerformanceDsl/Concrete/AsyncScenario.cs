@@ -17,8 +17,6 @@ namespace PerformanceDsl.Concrete
             _logger = logger;
             _guid = guid;
             _scenarioName = scenarioName;
-            Log4NetLogger.LogEntry(GetType(), "AsyncScenario Constructor", string.Format("starting {0}", _scenarioName),
-                LoggerLevel.Info);
         }
 
         public string CurrentEventValidation { get; set; }

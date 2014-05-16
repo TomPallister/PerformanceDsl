@@ -18,11 +18,12 @@ namespace PerformanceDsl.Tests
             _logger = logger;
         }
 
+        [PerformanceTest]
         public async Task ASyncTestWebFormsGetAndPost()
         {
             const string hostUrl = "http://www.testwebformsapp.dev/";
 
-            var scenario = new AsyncScenario(string.Format("Sync Register Id is {0}", Guid.NewGuid()), _logger, _guid);
+            var scenario = new AsyncScenario(string.Format("ASync Register Id is {0}", Guid.NewGuid()), _logger, _guid);
             await scenario.
                 Exec("Open Home Page")
                 .Get(hostUrl);
@@ -43,27 +44,30 @@ namespace PerformanceDsl.Tests
                 .Post(string.Format("{0}{1}", hostUrl, "Account/Register"));
         }
 
+        [PerformanceTest]
         public async Task ASyncTestMvcGetRequest()
         {
             const string hostUrl = "http://www.testmvcapp.dev/";
 
-            var scenario = new AsyncScenario(string.Format("Sync Register on {0}", DateTime.Now), _logger, _guid);
+            var scenario = new AsyncScenario(string.Format("ASyncGetRequest id is {0}", Guid.NewGuid()), _logger, _guid);
 
             await scenario.
                 Exec("Get Values")
                 .Get(string.Format("{0}{1}", hostUrl, "api/values"));
         }
 
+        [PerformanceTest]
         public async Task ASyncTestMvcPostRequest()
         {
             const string hostUrl = "http://www.testmvcapp.dev/";
 
-            var scenario = new AsyncScenario(string.Format("Sync Register on {0}", DateTime.Now), _logger, _guid);
+            var scenario = new AsyncScenario(string.Format("ASyncPostRequest id is {0}", Guid.NewGuid()), _logger, _guid);
 
             await scenario.
                 Exec("Open Home Page")
                 .Json(JsonConvert.SerializeObject("some value"))
                 .Post(string.Format("{0}{1}", hostUrl, "api/values"));
+
         }
     }
 }

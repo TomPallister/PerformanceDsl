@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using log4net.Config;
+using PerformanceDsl;
 using PerformanceDsl.Logging;
 
 namespace TestRunner
@@ -21,9 +23,18 @@ namespace TestRunner
 
             //load the assembly and get test method, this needs to be dynamic
             Assembly assembly = Assembly.LoadFrom(assemblyWithTest);
-            Type[] types = assembly.GetTypes();
-            //Sync(types, testRunGuid, logger);
-            Task task = Async(types, testRunGuid, logger);
+            //get all the classes in the assembly
+            Type[] types = assembly.GetTypes().Where(x => x.IsClass).ToArray();
+            //get all the methods in the classes
+            var methodInfos = (from type in types
+                from methodInfo
+                    in type.GetMethods()
+                from attribute
+                    in methodInfo.CustomAttributes
+                where attribute.AttributeType == typeof (PerformanceTest)
+                select methodInfo).ToList();
+
+            Task task = ExecuteTestMethods(types[0], methodInfos, testRunGuid, logger);
             task.ContinueWith(x =>
             {
                 Console.WriteLine(x.Status.ToString());
@@ -32,40 +43,28 @@ namespace TestRunner
             task.Wait();
         }
 
-        private static void Sync(Type[] types, Guid guid, ILogger logger)
+        private static async Task ExecuteTestMethods(Type type, List<MethodInfo> methods, Guid guid, ILogger logger)
         {
-            MethodInfo methodInfo = types[0].GetMethod("SyncTestWebFormsGetAndPost");
-            object classInstance = Activator.CreateInstance(types[0], guid, logger);
-            Stopwatch watch = Stopwatch.StartNew();
-            const int numThreads = 10;
-            var resetEvent = new ManualResetEvent(false);
-            int toProcess = numThreads;
-            for (int i = 0; i < numThreads; i++)
-            {
-                new Thread(delegate()
-                {
-                    methodInfo.Invoke(classInstance, null);
-                    if (Interlocked.Decrement(ref toProcess) == 0)
-                        resetEvent.Set();
-                }).Start();
-            }
-            resetEvent.WaitOne();
-            watch.Stop();
-        }
+            var classInstance = Activator.CreateInstance(type, guid, logger);
 
-        private static async Task Async(Type[] types, Guid guid, ILogger logger)
+            const int numTasks = 1;
+            var tasks = new Task[methods.Count];
+            for (int i = 0; i < methods.Count; i++)
+            {
+                tasks[i] = ExecuteTestMethod(methods[i], classInstance, numTasks);
+            }
+
+            await Task.WhenAll(tasks);
+
+        }
+        private static async Task ExecuteTestMethod(MethodInfo method, object type, int numTasks)
         {
-            MethodInfo methodInfo = types[0].GetMethod("ASyncTestWebFormsGetAndPost");
-            object classInstance = Activator.CreateInstance(types[0], guid, logger);
-            Stopwatch watch = Stopwatch.StartNew();
-            const int numTasks = 300;
             var tasks = new Task[numTasks];
             for (int i = 0; i < numTasks; i++)
             {
-                tasks[i] = (Task) methodInfo.Invoke(classInstance, null);
+                tasks[i] = (Task)method.Invoke(type, null);
             }
             await Task.WhenAll(tasks);
-            watch.Stop();
         }
     }
 }

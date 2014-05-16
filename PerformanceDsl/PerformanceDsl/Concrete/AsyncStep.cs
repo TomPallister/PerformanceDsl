@@ -29,8 +29,8 @@ namespace PerformanceDsl.Concrete
             _scenario = scenario;
             FormContent = new List<KeyValuePair<string, string>>();
             _logger = logger;
-            Log4NetLogger.LogEntry(GetType(), "AsyncStep Constructor", string.Format("starting {0}", stepName),
-                LoggerLevel.Info);
+            //Log4NetLogger.LogEntry(GetType(), "AsyncStep Constructor", string.Format("starting {0}", stepName),
+            //    LoggerLevel.Info);
         }
 
         public AsyncStep FormData(string name, string value)
@@ -55,6 +55,7 @@ namespace PerformanceDsl.Concrete
             Stopwatch.Stop();
             SetCurrentHtml(result.Content.ReadAsStringAsync().Result);
             //todo post result to api
+            Console.WriteLine("POSTPOSTPOSTPOSTPOSTPOSTPOSTPOSTPOSTPOSTPOSTPOSTPOSTPOSTPOSTPOSTPOSTPOSTPOST");
             _logger.Log(GetType(), "POST", _scenario.ScenarioName, Url, result, Stopwatch.ElapsedMilliseconds, Guid);
             ScrapeAspNetDataFromHtml(CurrentHtml);
             Dispose();
@@ -71,6 +72,7 @@ namespace PerformanceDsl.Concrete
             Stopwatch.Stop();
             SetCurrentHtml(result.Content.ReadAsStringAsync().Result);
             //todo post result to api
+            Console.WriteLine("GETGETGETGETGETGETGETGETGETGETGETGETGETGETGETGETGETGETGETGETGET");
             _logger.Log(GetType(), "GET", _scenario.ScenarioName, Url, result, Stopwatch.ElapsedMilliseconds, Guid);
             ScrapeAspNetDataFromHtml(CurrentHtml);
             Dispose();
