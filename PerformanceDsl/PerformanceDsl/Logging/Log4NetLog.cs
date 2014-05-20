@@ -12,5 +12,10 @@ namespace PerformanceDsl.Logging
                 string.Format("Scenario Name {0} request Url {1} took {2} milli seconds to respond for test run {3}",
                     scenarioName, url, milliSeconds, guid), LoggerLevel.Info);
         }
+
+        public void Log(Result result)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

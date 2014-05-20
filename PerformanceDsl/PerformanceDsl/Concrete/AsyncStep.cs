@@ -45,7 +45,7 @@ namespace PerformanceDsl.Concrete
             return this;
         }
 
-        public async Task<HttpResponseMessage> Post(string url)
+        public async Task<Result> Post(string url)
         {
             Url = url;
             SetUpContent();
@@ -54,15 +54,15 @@ namespace PerformanceDsl.Concrete
             HttpResponseMessage result = await Task;
             Stopwatch.Stop();
             SetCurrentHtml(result.Content.ReadAsStringAsync().Result);
-            //todo post result to api
-            _logger.Log(GetType(), "POST", _scenario.ScenarioName, Url, result, Stopwatch.ElapsedMilliseconds, Guid);
+            var testResult = new Result(result, Stopwatch.ElapsedMilliseconds, HttpPostMethod.Post, Url, _scenario.ScenarioName, Guid);
+            _logger.Log(testResult);
             ScrapeAspNetDataFromHtml(CurrentHtml);
             Dispose();
             SetUpScenario();
-            return result;
+            return testResult;
         }
 
-        public async Task<HttpResponseMessage> Get(string url)
+        public async Task<Result> Get(string url)
         {
             Url = url;
             Stopwatch = Stopwatch.StartNew();
@@ -70,12 +70,12 @@ namespace PerformanceDsl.Concrete
             HttpResponseMessage result = await Task;
             Stopwatch.Stop();
             SetCurrentHtml(result.Content.ReadAsStringAsync().Result);
-            //todo post result to api
-            _logger.Log(GetType(), "GET", _scenario.ScenarioName, Url, result, Stopwatch.ElapsedMilliseconds, Guid);
+            var testResult = new Result(result, Stopwatch.ElapsedMilliseconds, HttpPostMethod.Get, Url, _scenario.ScenarioName, Guid);
+            _logger.Log(testResult);
             ScrapeAspNetDataFromHtml(CurrentHtml);
             Dispose();
             SetUpScenario();
-            return result;
+            return testResult;
         }
 
         public void Put()
