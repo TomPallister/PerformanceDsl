@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Net.Http;
+using System.Net;
 
 namespace PerformanceDsl
 {
@@ -13,31 +13,48 @@ namespace PerformanceDsl
 
     public class Result
     {
+        private readonly string _currentHtml;
         private readonly long _elapsedTimeInMilliseconds;
         private readonly HttpPostMethod _httpPostMethod;
-        private readonly HttpResponseMessage _responseMessage;
+        private readonly HttpStatusCode _httpStatusCode;
         private readonly string _scenarioName;
+        private readonly string _stepName;
         private readonly Guid _testRunGuid;
         private readonly string _url;
 
-        public Result(HttpResponseMessage responseMessage,
+        public Result(HttpStatusCode httpStatusCode,
+            string currentHtml,
             long elapsedTimeInMilliseconds,
             HttpPostMethod httpPostMethod,
             string url,
             string scenarioName,
-            Guid testRunGuid)
+            Guid testRunGuid,
+            string stepName)
         {
-            _responseMessage = responseMessage;
+            _httpStatusCode = httpStatusCode;
+            _currentHtml = currentHtml;
             _elapsedTimeInMilliseconds = elapsedTimeInMilliseconds;
             _httpPostMethod = httpPostMethod;
             _url = url;
             _scenarioName = scenarioName;
             _testRunGuid = testRunGuid;
+            _stepName = stepName;
         }
 
-        public HttpResponseMessage HttpResponseMessage
+        public string StepName
         {
-            get { return _responseMessage; }
+            get { return _stepName; }
+        }
+
+
+        public HttpStatusCode HttpStatusCode
+        {
+            get { return _httpStatusCode; }
+        }
+
+        public string CurrentHtml
+        {
+            get { return _currentHtml; }
         }
 
         public long ElapsedTimeInMilliseconds

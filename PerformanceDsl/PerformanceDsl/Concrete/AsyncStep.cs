@@ -11,11 +11,12 @@ namespace PerformanceDsl.Concrete
 {
     public class AsyncStep : RequestBase
     {
-        private readonly ILogger _logger;
+        private readonly ApiLogger _logger;
         private readonly AsyncScenario _scenario;
+        private readonly string _stepName;
 
         public AsyncStep(string stepName, AsyncScenario scenario, string currentEventValidation,
-            string currentViewState, CookieContainer container, string currentHtml, ILogger logger, Guid guid)
+            string currentViewState, CookieContainer container, string currentHtml, ApiLogger logger, Guid guid)
             : base(new HttpClientHandler
             {
                 CookieContainer = container,
@@ -29,8 +30,7 @@ namespace PerformanceDsl.Concrete
             _scenario = scenario;
             FormContent = new List<KeyValuePair<string, string>>();
             _logger = logger;
-            //Log4NetLogger.LogEntry(GetType(), "AsyncStep Constructor", string.Format("starting {0}", stepName),
-            //    LoggerLevel.Info);
+            _stepName = stepName;
         }
 
         public AsyncStep FormData(string name, string value)
@@ -54,8 +54,10 @@ namespace PerformanceDsl.Concrete
             HttpResponseMessage result = await Task;
             Stopwatch.Stop();
             SetCurrentHtml(result.Content.ReadAsStringAsync().Result);
-            var testResult = new Result(result, Stopwatch.ElapsedMilliseconds, HttpPostMethod.Post, Url, _scenario.ScenarioName, Guid);
-            _logger.Log(testResult);
+            var testResult = new Result(result.StatusCode, CurrentHtml, Stopwatch.ElapsedMilliseconds,
+                HttpPostMethod.Post, Url,
+                _scenario.ScenarioName, Guid, _stepName);
+            await _logger.Log(testResult);
             ScrapeAspNetDataFromHtml(CurrentHtml);
             Dispose();
             SetUpScenario();
@@ -70,8 +72,10 @@ namespace PerformanceDsl.Concrete
             HttpResponseMessage result = await Task;
             Stopwatch.Stop();
             SetCurrentHtml(result.Content.ReadAsStringAsync().Result);
-            var testResult = new Result(result, Stopwatch.ElapsedMilliseconds, HttpPostMethod.Get, Url, _scenario.ScenarioName, Guid);
-            _logger.Log(testResult);
+            var testResult = new Result(result.StatusCode, CurrentHtml, Stopwatch.ElapsedMilliseconds,
+                HttpPostMethod.Get, Url,
+                _scenario.ScenarioName, Guid, _stepName);
+            await _logger.Log(testResult);
             ScrapeAspNetDataFromHtml(CurrentHtml);
             Dispose();
             SetUpScenario();

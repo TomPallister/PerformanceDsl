@@ -55,7 +55,6 @@ namespace PerformanceDsl.ResultStore.Infrastructure.Extensions
         }
 
 
-
         /// <summary>
         ///     Returns a char value from a datareader for the specified column. If the db value is null the supplied default value
         ///     is returned
@@ -296,8 +295,5 @@ namespace PerformanceDsl.ResultStore.Infrastructure.Extensions
 
             return dbValue != DBNull.Value && dbValue is DateTime ? (DateTime) dbValue : defaultValue;
         }
-
-   
-        
     }
 }

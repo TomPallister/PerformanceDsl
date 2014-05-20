@@ -8,10 +8,10 @@ namespace PerformanceDsl.Concrete
     {
         private readonly CookieContainer _cookieContainer;
         private readonly Guid _guid;
-        private readonly ILogger _logger;
+        private readonly ApiLogger _logger;
         private readonly string _scenarioName;
 
-        public AsyncScenario(string scenarioName, ILogger logger, Guid guid)
+        public AsyncScenario(string scenarioName, ApiLogger logger, Guid guid)
         {
             _cookieContainer = new CookieContainer();
             _logger = logger;

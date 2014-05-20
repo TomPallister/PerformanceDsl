@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -15,7 +14,7 @@ namespace TestRunner
         private static void Main()
         {
             XmlConfigurator.Configure();
-            ILogger logger = new Log4NetLog();
+            var logger = new ApiLogger();
             Guid testRunGuid = Guid.NewGuid();
             //assembly to test hardcoded at the moment obs going to be passed in.
             const string assemblyWithTest =
@@ -26,7 +25,7 @@ namespace TestRunner
             //get all the classes in the assembly
             Type[] types = assembly.GetTypes().Where(x => x.IsClass).ToArray();
             //get all the methods in the classes
-            var methodInfos = (from type in types
+            List<MethodInfo> methodInfos = (from type in types
                 from methodInfo
                     in type.GetMethods()
                 from attribute
@@ -43,9 +42,9 @@ namespace TestRunner
             task.Wait();
         }
 
-        private static async Task ExecuteTestMethods(Type type, List<MethodInfo> methods, Guid guid, ILogger logger)
+        private static async Task ExecuteTestMethods(Type type, List<MethodInfo> methods, Guid guid, ApiLogger logger)
         {
-            var classInstance = Activator.CreateInstance(type, guid, logger);
+            object classInstance = Activator.CreateInstance(type, guid, logger);
 
             const int numTasks = 10;
             var tasks = new Task[methods.Count];
@@ -55,19 +54,18 @@ namespace TestRunner
                 tasks[i].Wait();
             }
 
-           // await Task.WhenAll(tasks);
-
+            // await Task.WhenAll(tasks);
         }
+
         private static async Task ExecuteTestMethod(MethodInfo method, object type, int numTasks)
         {
             var tasks = new Task[numTasks];
             for (int i = 0; i < numTasks; i++)
             {
-                tasks[i] = (Task)method.Invoke(type, null);
+                tasks[i] = (Task) method.Invoke(type, null);
                 tasks[i].Wait();
-
             }
-           // await Task.WhenAll(tasks);
+            // await Task.WhenAll(tasks);
         }
     }
 }

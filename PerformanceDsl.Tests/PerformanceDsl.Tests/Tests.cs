@@ -1,4 +1,5 @@
 ﻿//using PerformanceDsl.Sync;
+
 using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -10,9 +11,9 @@ namespace PerformanceDsl.Tests
     public class Tests
     {
         private readonly Guid _guid;
-        private readonly ILogger _logger;
+        private readonly ApiLogger _logger;
 
-        public Tests(Guid guid, ILogger logger)
+        public Tests(Guid guid, ApiLogger logger)
         {
             _guid = guid;
             _logger = logger;
@@ -49,7 +50,7 @@ namespace PerformanceDsl.Tests
         {
             const string hostUrl = "http://www.testmvcapp.dev/";
 
-            var scenario = new AsyncScenario(string.Format("ASyncGetRequest id is {0}", Guid.NewGuid()), _logger, _guid);
+            var scenario = new AsyncScenario(string.Format("ASyncGetRequest"), _logger, _guid);
 
             await scenario.
                 Exec("Get Values")
@@ -61,13 +62,12 @@ namespace PerformanceDsl.Tests
         {
             const string hostUrl = "http://www.testmvcapp.dev/";
 
-            var scenario = new AsyncScenario(string.Format("ASyncPostRequest id is {0}", Guid.NewGuid()), _logger, _guid);
+            var scenario = new AsyncScenario(string.Format("ASyncPostRequest"), _logger, _guid);
 
             await scenario.
                 Exec("Open Home Page")
                 .Json(JsonConvert.SerializeObject("some value"))
                 .Post(string.Format("{0}{1}", hostUrl, "api/values"));
-
         }
     }
 }

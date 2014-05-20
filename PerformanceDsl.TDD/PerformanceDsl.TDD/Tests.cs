@@ -7,11 +7,11 @@ namespace PerformanceDsl.TDD
 {
     public class Tests
     {
-        private readonly ILogger _logger;
+        private readonly ApiLogger _logger;
 
         public Tests()
         {
-            _logger = new Log4NetLog();
+            _logger = new ApiLogger();
         }
 
         [Fact]

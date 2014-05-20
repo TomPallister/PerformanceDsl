@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PerformanceDsl.ResultStore
+﻿namespace PerformanceDsl.ResultStore
 {
     public class TestResultService : ITestResultService
     {
@@ -17,7 +11,7 @@ namespace PerformanceDsl.ResultStore
 
         public void Store(Result result)
         {
-            _testResultDatabase.Store(result);    
+            _testResultDatabase.Store(result);
         }
     }
 }

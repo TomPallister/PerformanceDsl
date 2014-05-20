@@ -3,9 +3,10 @@ using System.Web.Http;
 namespace TestResultsStore.Areas.HelpPage.App_Start
 {
     /// <summary>
-    /// Use this class to customize the Help Page.
-    /// For example you can set a custom <see cref="System.Web.Http.Description.IDocumentationProvider"/> to supply the documentation
-    /// or you can provide the samples for the requests/responses.
+    ///     Use this class to customize the Help Page.
+    ///     For example you can set a custom <see cref="System.Web.Http.Description.IDocumentationProvider" /> to supply the
+    ///     documentation
+    ///     or you can provide the samples for the requests/responses.
     /// </summary>
     public static class HelpPageConfig
     {
