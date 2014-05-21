@@ -1,6 +1,7 @@
 ﻿//using PerformanceDsl.Sync;
 
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PerformanceDsl.Concrete;
@@ -45,29 +46,29 @@ namespace PerformanceDsl.Tests
                 .Post(string.Format("{0}{1}", hostUrl, "Account/Register"));
         }
 
-        [PerformanceTest]
-        public async Task ASyncTestMvcGetRequest()
-        {
-            const string hostUrl = "http://www.testmvcapp.dev/";
+        //[PerformanceTest]
+        //public async Task ASyncTestMvcGetRequest()
+        //{
+        //    const string hostUrl = "http://www.testmvcapp.dev/";
 
-            var scenario = new AsyncScenario(string.Format("ASyncGetRequest"), _logger, _guid);
+        //    var scenario = new AsyncScenario(string.Format("ASyncGetRequest"), _logger, _guid);
 
-            await scenario.
-                Exec("Get Values")
-                .Get(string.Format("{0}{1}", hostUrl, "api/values"));
-        }
+        //    await scenario.
+        //        Exec("Get Values")
+        //        .Get(string.Format("{0}{1}", hostUrl, "api/values"));
+        //}
 
-        [PerformanceTest]
-        public async Task ASyncTestMvcPostRequest()
-        {
-            const string hostUrl = "http://www.testmvcapp.dev/";
+        //[PerformanceTest]
+        //public async Task ASyncTestMvcPostRequest()
+        //{
+        //    const string hostUrl = "http://www.testmvcapp.dev/";
 
-            var scenario = new AsyncScenario(string.Format("ASyncPostRequest"), _logger, _guid);
+        //    var scenario = new AsyncScenario(string.Format("ASyncPostRequest"), _logger, _guid);
 
-            await scenario.
-                Exec("Open Home Page")
-                .Json(JsonConvert.SerializeObject("some value"))
-                .Post(string.Format("{0}{1}", hostUrl, "api/values"));
-        }
+        //    await scenario.
+        //        Exec("Post Values")
+        //        .Json(JsonConvert.SerializeObject("some value"))
+        //        .Post(string.Format("{0}{1}", hostUrl, "api/values"));
+        //}
     }
 }

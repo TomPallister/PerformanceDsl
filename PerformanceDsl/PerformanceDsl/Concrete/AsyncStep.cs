@@ -50,13 +50,14 @@ namespace PerformanceDsl.Concrete
             Url = url;
             SetUpContent();
             Stopwatch = Stopwatch.StartNew();
+            var date = DateTime.Now;
             Task = PostAsync(Url, HttpContent);
             HttpResponseMessage result = await Task;
             Stopwatch.Stop();
             SetCurrentHtml(result.Content.ReadAsStringAsync().Result);
             var testResult = new Result(result.StatusCode, CurrentHtml, Stopwatch.ElapsedMilliseconds,
                 HttpPostMethod.Post, Url,
-                _scenario.ScenarioName, Guid, _stepName);
+                _scenario.ScenarioName, Guid, _stepName, date);
             await _logger.Log(testResult);
             ScrapeAspNetDataFromHtml(CurrentHtml);
             Dispose();
@@ -68,13 +69,14 @@ namespace PerformanceDsl.Concrete
         {
             Url = url;
             Stopwatch = Stopwatch.StartNew();
+            var date = DateTime.Now;
             Task = GetAsync(new Uri(Url));
             HttpResponseMessage result = await Task;
             Stopwatch.Stop();
             SetCurrentHtml(result.Content.ReadAsStringAsync().Result);
             var testResult = new Result(result.StatusCode, CurrentHtml, Stopwatch.ElapsedMilliseconds,
                 HttpPostMethod.Get, Url,
-                _scenario.ScenarioName, Guid, _stepName);
+                _scenario.ScenarioName, Guid, _stepName, date);
             await _logger.Log(testResult);
             ScrapeAspNetDataFromHtml(CurrentHtml);
             Dispose();

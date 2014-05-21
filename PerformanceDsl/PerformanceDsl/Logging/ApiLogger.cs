@@ -12,15 +12,6 @@ namespace PerformanceDsl.Logging
     {
         public async Task Log(Result testResult)
         {
-            //using (var client = new WebClient())
-            //{
-            //    client.Headers[HttpRequestHeader.ContentType] = "application/json";
-            //    var data = JsonConvert.SerializeObject(testResult);
-            //    client.UploadStringAsync(new Uri("http://www.testresultsstore.dev/api/result"), "POST", data);
-            //    //var result = client.UploadStringAsync("http://www.testresultsstore.dev/api/result", "POST", data);
-            //}
-
-
             using (var httpClient = new HttpClient())
             {
                 string url = string.Format("{0}api/result", ConfigurationManager.AppSettings.Get("ApiUrl"));

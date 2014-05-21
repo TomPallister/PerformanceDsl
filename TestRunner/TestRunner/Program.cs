@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using log4net.Config;
 using PerformanceDsl;
@@ -51,21 +53,52 @@ namespace TestRunner
             for (int i = 0; i < methods.Count; i++)
             {
                 tasks[i] = ExecuteTestMethod(methods[i], classInstance, numTasks);
-                tasks[i].Wait();
             }
 
-            // await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks);
         }
 
         private static async Task ExecuteTestMethod(MethodInfo method, object type, int numTasks)
-        {
-            var tasks = new Task[numTasks];
-            for (int i = 0; i < numTasks; i++)
+        {   //i want a maximum of ten users
+            int users = 100;
+            //i want to run these tests at max capacity for 
+            int seconds = 20;
+            //i want a 10 second ramp up
+            int rampup = 10;
+            var stopwatch = Stopwatch.StartNew();
+            while (stopwatch.Elapsed.Seconds <= rampup)
             {
-                tasks[i] = (Task) method.Invoke(type, null);
-                tasks[i].Wait();
+                var tasks = new Task[users];
+                for (int i = 0; i < users; i++)
+                {
+                    tasks[i] = (Task)method.Invoke(type, null);
+                    Thread.Sleep(rampup / users * 1000);
+                    Console.WriteLine(rampup / users * 1000);
+                }
+                await Task.WhenAll(tasks);
             }
-            // await Task.WhenAll(tasks);
+            while (stopwatch.Elapsed.Seconds <= rampup + seconds)
+            {
+                var tasks = new Task[users];
+                for (int i = 0; i < users; i++)
+                {
+                    tasks[i] = (Task)method.Invoke(type, null);
+                }
+                Thread.Sleep(rampup + seconds / users * 1000);
+
+                await Task.WhenAll(tasks);
+            }
+            //Task.WaitAll();
+
+            //while (stopwatch.Elapsed.Seconds <= 10)
+            //{
+            //    var tasks = new Task[numTasks];
+            //    for (int i = 0; i < numTasks; i++)
+            //    {
+            //        tasks[i] = (Task)method.Invoke(type, null);
+            //    }
+            //    await Task.WhenAll(tasks);
+            //}
         }
     }
 }

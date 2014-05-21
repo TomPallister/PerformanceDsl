@@ -23,6 +23,14 @@ namespace PerformanceDsl.ResultStore
             {
                 new SqlParameter("@Json", JsonConvert.SerializeObject(result)),
                 new SqlParameter("@TestRunId", result.TestRunGuid),
+                new SqlParameter("@CurrentHtml", result.CurrentHtml),
+                new SqlParameter("@StepName", result.StepName),
+                new SqlParameter("@HttpStatusCode", result.HttpStatusCode),
+                new SqlParameter("@HttpPostMethod", result.HttpPostMethod.ToString()),
+                new SqlParameter("@Url", result.Url),
+                new SqlParameter("@ScenarioName", result.ScenarioName),
+                new SqlParameter("@ElapsedTimeInMilliseconds", result.ElapsedTimeInMilliseconds),
+                new SqlParameter("@Date", result.Date.ToUniversalTime())
             };
 
             return sqlParameters;
