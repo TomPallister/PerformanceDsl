@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using log4net.Config;
+using Newtonsoft.Json;
 using PerformanceDsl;
 using PerformanceDsl.Logging;
 
@@ -15,15 +16,20 @@ namespace TestRunner
     {
         private static void Main()
         {
+            //this object needs to be passed into the test runner, may expose as http
+            var testRun = new TestRun("[{\"RampUpPeriodInSeconds\":10,\"MainRunPeriodInSeconds\":20,\"Users\":10,\"MethodName\":\"ASyncTestWebFormsGetAndPost\",\"NameSpace\":\"PerformanceDsl.Tests.Tests\"}]",
+                @"C:\git\PerformanceDsl\PerformanceDsl.Tests\PerformanceDsl.Tests\bin\Debug\PerformanceDsl.Tests.dll",
+                Guid.NewGuid());
             XmlConfigurator.Configure();
+            //probably do something here with DI to set up the logger
             var logger = new ApiLogger();
-            Guid testRunGuid = Guid.NewGuid();
-            //assembly to test hardcoded at the moment obs going to be passed in.
-            const string assemblyWithTest =
-                @"C:\git\PerformanceDsl\PerformanceDsl.Tests\PerformanceDsl.Tests\bin\Debug\PerformanceDsl.Tests.dll";
-
+            //we need these two lists later
+            var testConfigurations = new List<TestConfiguration>();
+            //deserialise our config
+            var testConfig = JsonConvert.DeserializeObject<TestConfiguration[]>(testRun.JsonArrayOfTestConfigurations);
+            testConfigurations.AddRange(testConfig);
             //load the assembly and get test method, this needs to be dynamic
-            Assembly assembly = Assembly.LoadFrom(assemblyWithTest);
+            Assembly assembly = Assembly.LoadFrom(testRun.DllThatContainsTestsPath);
             //get all the classes in the assembly
             Type[] types = assembly.GetTypes().Where(x => x.IsClass).ToArray();
             //get all the methods in the classes
@@ -34,8 +40,18 @@ namespace TestRunner
                     in methodInfo.CustomAttributes
                 where attribute.AttributeType == typeof (PerformanceTest)
                 select methodInfo).ToList();
-
-            Task task = ExecuteTestMethods(types[0], methodInfos, testRunGuid, logger);
+            //now we have all of the methods we need to find their configurations for this test run
+            //this needs to look at a config file and match on namespace/method name or something
+            //or we could pass the configs into as arguments
+            var testContainers = (from method in methodInfos
+                from testConfiguration in testConfigurations
+                where
+                    method.DeclaringType != null &&
+                    (testConfiguration.MethodName == method.Name &&
+                     testConfiguration.NameSpace == method.DeclaringType.UnderlyingSystemType.FullName)
+                select new TestContainer(method, testConfiguration)).ToList();
+            //execute the methods that were identified with their configs
+            Task task = ExecuteTestMethods(types[0], testContainers, testRun.TestRunIdentifier, logger);
             task.ContinueWith(x =>
             {
                 Console.WriteLine(x.Status.ToString());
@@ -44,61 +60,48 @@ namespace TestRunner
             task.Wait();
         }
 
-        private static async Task ExecuteTestMethods(Type type, List<MethodInfo> methods, Guid guid, ApiLogger logger)
+        private static async Task ExecuteTestMethods(Type type, List<TestContainer> testContainers, Guid guid,
+            ApiLogger logger)
         {
             object classInstance = Activator.CreateInstance(type, guid, logger);
-
-            const int numTasks = 10;
-            var tasks = new Task[methods.Count];
-            for (int i = 0; i < methods.Count; i++)
+            var tasks = new Task[testContainers.Count];
+            for (int i = 0; i < testContainers.Count; i++)
             {
-                tasks[i] = ExecuteTestMethod(methods[i], classInstance, numTasks);
+                tasks[i] = ExecuteTestMethod(testContainers[i], classInstance);
             }
 
             await Task.WhenAll(tasks);
         }
 
-        private static async Task ExecuteTestMethod(MethodInfo method, object type, int numTasks)
-        {   //i want a maximum of ten users
-            int users = 100;
-            //i want to run these tests at max capacity for 
-            int seconds = 20;
-            //i want a 10 second ramp up
-            int rampup = 10;
-            var stopwatch = Stopwatch.StartNew();
-            while (stopwatch.Elapsed.Seconds <= rampup)
+        private static async Task ExecuteTestMethod(TestContainer testContainer, object type)
+        {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            while (stopwatch.Elapsed.Seconds <= testContainer.TestConfiguration.RampUpPeriodInSeconds)
             {
-                var tasks = new Task[users];
-                for (int i = 0; i < users; i++)
+                var tasks = new Task[testContainer.TestConfiguration.Users];
+                for (int i = 0; i < testContainer.TestConfiguration.Users; i++)
                 {
-                    tasks[i] = (Task)method.Invoke(type, null);
-                    Thread.Sleep(rampup / users * 1000);
-                    Console.WriteLine(rampup / users * 1000);
+                    tasks[i] = (Task) testContainer.Method.Invoke(type, null);
+                    Thread.Sleep(testContainer.TestConfiguration.RampUpPeriodInSeconds/
+                                 testContainer.TestConfiguration.Users*1000);
                 }
                 await Task.WhenAll(tasks);
             }
-            while (stopwatch.Elapsed.Seconds <= rampup + seconds)
+            while (stopwatch.Elapsed.Seconds <=
+                   testContainer.TestConfiguration.RampUpPeriodInSeconds +
+                   testContainer.TestConfiguration.MainRunPeriodInSeconds)
             {
-                var tasks = new Task[users];
-                for (int i = 0; i < users; i++)
+                var tasks = new Task[testContainer.TestConfiguration.Users];
+                for (int i = 0; i < testContainer.TestConfiguration.Users; i++)
                 {
-                    tasks[i] = (Task)method.Invoke(type, null);
+                    tasks[i] = (Task) testContainer.Method.Invoke(type, null);
                 }
-                Thread.Sleep(rampup + seconds / users * 1000);
-
+                //dont think this sleep makes sense because the 
+                ////loop should not continue untill the tasks have ended.
+                //Thread.Sleep(testConfiguration.RampUpPeriodInSeconds +
+                //             testConfiguration.MainRunPeriodInSeconds/testConfiguration.Users*1000);
                 await Task.WhenAll(tasks);
             }
-            //Task.WaitAll();
-
-            //while (stopwatch.Elapsed.Seconds <= 10)
-            //{
-            //    var tasks = new Task[numTasks];
-            //    for (int i = 0; i < numTasks; i++)
-            //    {
-            //        tasks[i] = (Task)method.Invoke(type, null);
-            //    }
-            //    await Task.WhenAll(tasks);
-            //}
         }
     }
 }
