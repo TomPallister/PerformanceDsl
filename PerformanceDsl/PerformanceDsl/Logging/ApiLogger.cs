@@ -15,6 +15,7 @@ namespace PerformanceDsl.Logging
             using (var httpClient = new HttpClient())
             {
                 string url = string.Format("{0}api/result", ConfigurationManager.AppSettings.Get("ApiUrl"));
+                Log4NetLogger.LogEntry(GetType(), "Log", url, LoggerLevel.Info);
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 var json = JsonConvert.SerializeObject(testResult);
                 var content = new StringContent(json);

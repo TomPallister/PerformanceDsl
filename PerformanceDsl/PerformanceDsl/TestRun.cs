@@ -4,30 +4,10 @@ namespace PerformanceDsl
 {
     public class TestRun
     {
-        private readonly string _dllThatContainsTestsPath;
-        private readonly string _jsonArrayOfTestConfigurations;
-        private readonly Guid _testRunIdentifier;
+        public string JsonArrayOfTestConfigurations { get; set; }
 
-        public TestRun(string jsonArrayOfTestConfigurations, string dllThatContainsTestsPath, Guid testRunIdentifier)
-        {
-            _jsonArrayOfTestConfigurations = jsonArrayOfTestConfigurations;
-            _dllThatContainsTestsPath = dllThatContainsTestsPath;
-            _testRunIdentifier = testRunIdentifier;
-        }
+        public string DllThatContainsTestsPath { get; set; }
 
-        public string JsonArrayOfTestConfigurations
-        {
-            get { return _jsonArrayOfTestConfigurations; }
-        }
-
-        public string DllThatContainsTestsPath
-        {
-            get { return _dllThatContainsTestsPath; }
-        }
-
-        public Guid TestRunIdentifier
-        {
-            get { return _testRunIdentifier; }
-        }
+        public Guid TestRunIdentifier { get; set; }
     }
 }

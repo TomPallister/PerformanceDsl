@@ -90,6 +90,7 @@
     <Compile Include="Concrete\AsyncScenario.cs" />
     <Compile Include="Concrete\AsyncStep.cs" />
     <Compile Include="Helpers\HttpScraper.cs" />
+    <Compile Include="LocalHttpListener.cs" />
     <Compile Include="Logging\ApiLogger.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\Log4NetLog.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="TestConfiguration.cs" />
     <Compile Include="TestContainer.cs" />
     <Compile Include="TestRun.cs" />
+    <Compile Include="TestRunner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

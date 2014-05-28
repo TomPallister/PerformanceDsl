@@ -5,34 +5,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using log4net.Config;
 using Newtonsoft.Json;
-using PerformanceDsl;
 using PerformanceDsl.Logging;
 
-namespace TestRunner
+namespace PerformanceDsl
 {
-    internal class Program
+    public class TestRunner
     {
-        private static void Main()
-        {
-            //testrun json from post
-            var testRunJson =
-                "{\"JsonArrayOfTestConfigurations\":\"[{\\\"RampUpPeriodInSeconds\\\":10,\\\"MainRunPeriodInSeconds\\\":20,\\\"Users\\\":10,\\\"MethodName\\\":\\\"ASyncTestWebFormsGetAndPost\\\",\\\"NameSpace\\\":\\\"PerformanceDsl.Tests.Tests\\\"}]\",\"DllThatContainsTestsPath\":\"C:\\\\git\\\\PerformanceDsl\\\\PerformanceDsl.Tests\\\\PerformanceDsl.Tests\\\\bin\\\\Debug\\\\PerformanceDsl.Tests.dll\",\"TestRunIdentifier\":\"bd857c26-390f-4957-bde2-5d1c7f6d4340\"}";
-            //this object needs to be passed into the test runner, may expose as http
-
-            var testRun = JsonConvert.DeserializeObject<TestRun>(testRunJson);
-            XmlConfigurator.Configure();
-            Task task = Begin(testRun);
-            task.ContinueWith(x =>
-            {
-                Console.WriteLine(x.Status.ToString());
-                Console.WriteLine("end");
-            });
-            task.Wait();
-        }
-
-        private static async Task Begin(TestRun testRun)
+        public async Task Begin(TestRun testRun)
         {
             //probably do something here with DI to set up the logger
             var logger = new ApiLogger();
@@ -47,22 +27,22 @@ namespace TestRunner
             Type[] types = assembly.GetTypes().Where(x => x.IsClass).ToArray();
             //get all the methods in the classes
             List<MethodInfo> methodInfos = (from type in types
-                                            from methodInfo
-                                                in type.GetMethods()
-                                            from attribute
-                                                in methodInfo.CustomAttributes
-                                            where attribute.AttributeType == typeof(PerformanceTest)
-                                            select methodInfo).ToList();
+                from methodInfo
+                    in type.GetMethods()
+                from attribute
+                    in methodInfo.CustomAttributes
+                where attribute.AttributeType == typeof (PerformanceTest)
+                select methodInfo).ToList();
             //now we have all of the methods we need to find their configurations for this test run
             //this needs to look at a config file and match on namespace/method name or something
             //or we could pass the configs into as arguments
-            var testContainers = (from method in methodInfos
-                                  from testConfiguration in testConfigurations
-                                  where
-                                      method.DeclaringType != null &&
-                                      (testConfiguration.MethodName == method.Name &&
-                                       testConfiguration.NameSpace == method.DeclaringType.UnderlyingSystemType.FullName)
-                                  select new TestContainer(method, testConfiguration)).ToList();
+            List<TestContainer> testContainers = (from method in methodInfos
+                from testConfiguration in testConfigurations
+                where
+                    method.DeclaringType != null &&
+                    (testConfiguration.MethodName == method.Name &&
+                     testConfiguration.NameSpace == method.DeclaringType.UnderlyingSystemType.FullName)
+                select new TestContainer(method, testConfiguration)).ToList();
             //execute the methods that were identified with their configs
             Task task = ExecuteTestMethods(types[0], testContainers, testRun.TestRunIdentifier, logger);
             await task.ContinueWith(x =>
@@ -73,7 +53,7 @@ namespace TestRunner
             task.Wait();
         }
 
-        private static async Task ExecuteTestMethods(Type type, List<TestContainer> testContainers, Guid guid,
+        private async Task ExecuteTestMethods(Type type, List<TestContainer> testContainers, Guid guid,
             ApiLogger logger)
         {
             object classInstance = Activator.CreateInstance(type, guid, logger);
@@ -86,7 +66,7 @@ namespace TestRunner
             await Task.WhenAll(tasks);
         }
 
-        private static async Task ExecuteTestMethod(TestContainer testContainer, object type)
+        private async Task ExecuteTestMethod(TestContainer testContainer, object type)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
             while (stopwatch.Elapsed.Seconds <= testContainer.TestConfiguration.RampUpPeriodInSeconds)
