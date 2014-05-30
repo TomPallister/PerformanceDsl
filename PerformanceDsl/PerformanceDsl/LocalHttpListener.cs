@@ -11,11 +11,13 @@ namespace PerformanceDsl
 {
     public class LocalHttpListener
     {
-        public const string UriAddress = "http://localhost:9999/";
+        public const string UriAddress = "http://*:9999/";
         private readonly HttpListener _httpListener;
 
         public LocalHttpListener()
         {
+            Log4NetLogger.LogEntry(typeof (LocalHttpListener), "LocalHttpListener_Constructor",
+                string.Format("Uri is {0}", UriAddress), LoggerLevel.Info);
             _httpListener = new HttpListener();
             _httpListener.Prefixes.Add(UriAddress);
         }
@@ -23,6 +25,7 @@ namespace PerformanceDsl
         public void Start()
         {
             _httpListener.Start();
+            Log4NetLogger.LogEntry(typeof(LocalHttpListener), "Start", "started server", LoggerLevel.Info);
 
             while (_httpListener.IsListening)
                 ProcessRequest();
@@ -35,6 +38,7 @@ namespace PerformanceDsl
 
         private void ProcessRequest()
         {
+            Log4NetLogger.LogEntry(typeof(LocalHttpListener), "ProcessRequest", "processing request", LoggerLevel.Info);
             IAsyncResult result = _httpListener.BeginGetContext(ListenerCallback, _httpListener);
             result.AsyncWaitHandle.WaitOne();
         }
@@ -46,10 +50,10 @@ namespace PerformanceDsl
             try
             {
                 WebRequestInfo info = Read(context.Request);
-
-                Console.WriteLine("Server received: {0}{1}",
-                    Environment.NewLine,
-                    info);
+                Log4NetLogger.LogEntry(typeof (LocalHttpListener), "ProcessRequest",
+                    string.Format("Server received: {0}{1}",
+                        Environment.NewLine,
+                        info), LoggerLevel.Info);
 
                 CreateResponse(context.Response, info.ToString());
             }
