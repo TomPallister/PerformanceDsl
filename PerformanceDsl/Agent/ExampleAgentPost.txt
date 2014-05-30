@@ -1,0 +1,5 @@
+﻿{
+    "JsonArrayOfTestConfigurations": "[{\"RampUpPeriodInSeconds\":1,\"MainRunPeriodInSeconds\":5,\"Users\":10,\"MethodName\":\"BbcGetRequest\",\"NameSpace\":\"PerformanceDsl.Tests.Tests\"}]",
+    "DllThatContainsTestsPath": "C:\\Agent\\Tests\\PerformanceDsl.Tests.dll",
+    "TestRunIdentifier": "bd857c26-390f-4957-bde2-5d1c7f6d4340"
+}
