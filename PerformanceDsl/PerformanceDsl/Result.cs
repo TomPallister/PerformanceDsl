@@ -13,8 +13,8 @@ namespace PerformanceDsl
 
     public class Result
     {
-        public int Id;
         private readonly string _currentHtml;
+        private readonly DateTime _date;
         private readonly long _elapsedTimeInMilliseconds;
         private readonly HttpPostMethod _httpPostMethod;
         private readonly HttpStatusCode _httpStatusCode;
@@ -22,7 +22,7 @@ namespace PerformanceDsl
         private readonly string _stepName;
         private readonly Guid _testRunGuid;
         private readonly string _url;
-        private readonly DateTime _date;
+        public int Id;
 
         public Result(HttpStatusCode httpStatusCode,
             string currentHtml,

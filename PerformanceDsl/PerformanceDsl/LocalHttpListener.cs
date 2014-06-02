@@ -3,7 +3,6 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using log4net.Config;
 using Newtonsoft.Json;
 using PerformanceDsl.Logging;
 
@@ -25,7 +24,7 @@ namespace PerformanceDsl
         public void Start()
         {
             _httpListener.Start();
-            Log4NetLogger.LogEntry(typeof(LocalHttpListener), "Start", "started server", LoggerLevel.Info);
+            Log4NetLogger.LogEntry(typeof (LocalHttpListener), "Start", "started server", LoggerLevel.Info);
 
             while (_httpListener.IsListening)
                 ProcessRequest();
@@ -38,7 +37,7 @@ namespace PerformanceDsl
 
         private void ProcessRequest()
         {
-            Log4NetLogger.LogEntry(typeof(LocalHttpListener), "ProcessRequest", "processing request", LoggerLevel.Info);
+            Log4NetLogger.LogEntry(typeof (LocalHttpListener), "ProcessRequest", "processing request", LoggerLevel.Info);
             IAsyncResult result = _httpListener.BeginGetContext(ListenerCallback, _httpListener);
             result.AsyncWaitHandle.WaitOne();
         }
@@ -60,9 +59,7 @@ namespace PerformanceDsl
             catch (Exception exception)
             {
                 CreateResponse(context.Response, exception.ToString());
-
             }
-
         }
 
         public static WebRequestInfo Read(HttpListenerRequest request)
@@ -82,7 +79,7 @@ namespace PerformanceDsl
                     info.Body = streamReader.ReadToEnd();
                 }
             }
-            Log4NetLogger.LogEntry(typeof(LocalHttpListener), "Read", info.Body, LoggerLevel.Info);
+            Log4NetLogger.LogEntry(typeof (LocalHttpListener), "Read", info.Body, LoggerLevel.Info);
             var testRunner = new TestRunner();
             try
             {
@@ -98,9 +95,8 @@ namespace PerformanceDsl
             }
             catch (Exception exception)
             {
-                Log4NetLogger.LogEntry(typeof(LocalHttpListener), "Read", info.Body, LoggerLevel.Error, exception);
+                Log4NetLogger.LogEntry(typeof (LocalHttpListener), "Read", info.Body, LoggerLevel.Error, exception);
                 return null;
-
             }
         }
 

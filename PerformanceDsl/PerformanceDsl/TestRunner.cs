@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using PerformanceDsl.Logging;
 
 namespace PerformanceDsl
@@ -19,8 +18,7 @@ namespace PerformanceDsl
             //we need these two lists later
             var testConfigurations = new List<TestConfiguration>();
             //deserialise our config
-            var testConfig = JsonConvert.DeserializeObject<TestConfiguration[]>(testRun.JsonArrayOfTestConfigurations);
-            testConfigurations.AddRange(testConfig);
+            testConfigurations.AddRange(testRun.TestConfigurations);
             //load the assembly and get test method, this needs to be dynamic
             Assembly assembly = Assembly.LoadFrom(testRun.DllThatContainsTestsPath);
             //get all the classes in the assembly

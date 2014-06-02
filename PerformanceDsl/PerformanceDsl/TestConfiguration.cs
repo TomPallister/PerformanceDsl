@@ -3,14 +3,14 @@
     public class TestConfiguration
     {
         private readonly int _mainRunPeriodInSeconds;
-        private readonly int _rampUpPeriodInSeconds;
-        private readonly int _users;
         private readonly string _methodName;
         private readonly string _namespace;
+        private readonly int _rampUpPeriodInSeconds;
+        private readonly int _users;
 
-        public TestConfiguration(int rampUpPeriodInSeconds, 
-            int mainRunPeriodInSeconds, 
-            int users, 
+        public TestConfiguration(int rampUpPeriodInSeconds,
+            int mainRunPeriodInSeconds,
+            int users,
             string methodName,
             string nameSpace)
         {

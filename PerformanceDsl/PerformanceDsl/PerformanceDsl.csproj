@@ -125,10 +125,12 @@
     <Compile Include="ResultStore\InMemoryTestResultDatabase.cs" />
     <Compile Include="ResultStore\SqlTestResultDatabase.cs" />
     <Compile Include="ResultStore\TestResultService.cs" />
+    <Compile Include="Test.cs" />
     <Compile Include="TestConfiguration.cs" />
     <Compile Include="TestContainer.cs" />
     <Compile Include="TestRun.cs" />
     <Compile Include="TestRunner.cs" />
+    <Compile Include="TestSuite.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

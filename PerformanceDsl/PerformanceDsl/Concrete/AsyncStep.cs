@@ -50,7 +50,7 @@ namespace PerformanceDsl.Concrete
             Url = url;
             SetUpContent();
             Stopwatch = Stopwatch.StartNew();
-            var date = DateTime.Now;
+            DateTime date = DateTime.Now;
             Task = PostAsync(Url, HttpContent);
             HttpResponseMessage result = await Task;
             Stopwatch.Stop();
@@ -69,7 +69,7 @@ namespace PerformanceDsl.Concrete
         {
             Url = url;
             Stopwatch = Stopwatch.StartNew();
-            var date = DateTime.Now;
+            DateTime date = DateTime.Now;
             Task = GetAsync(new Uri(Url));
             HttpResponseMessage result = await Task;
             Stopwatch.Stop();

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 
 namespace PerformanceDsl
 {
@@ -25,8 +20,11 @@ namespace PerformanceDsl
 
         public TestConfiguration TestConfiguration
         {
-            get { return _testConfiguration;; }
+            get
+            {
+                return _testConfiguration;
+                ;
+            }
         }
-
     }
 }

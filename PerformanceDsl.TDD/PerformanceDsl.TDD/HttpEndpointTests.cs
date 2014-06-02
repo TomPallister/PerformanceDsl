@@ -3,7 +3,6 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
 using Xunit;
 
@@ -14,11 +13,13 @@ namespace PerformanceDsl.TDD
         [Fact]
         public void can_serialise_test_run()
         {
-            var testRunJson = "{\"JsonArrayOfTestConfigurations\":\"[{\\\"RampUpPeriodInSeconds\\\":10,\\\"MainRunPeriodInSeconds\\\":20,\\\"Users\\\":10,\\\"MethodName\\\":\\\"ASyncTestWebFormsGetAndPost\\\",\\\"NameSpace\\\":\\\"PerformanceDsl.Tests.Tests\\\"}]\",\"DllThatContainsTestsPath\":\"C:\\\\git\\\\PerformanceDsl\\\\PerformanceDsl.Tests\\\\PerformanceDsl.Tests\\\\bin\\\\Debug\\\\PerformanceDsl.Tests.dll\",\"TestRunIdentifier\":\"bd857c26-390f-4957-bde2-5d1c7f6d4340\"}";
+            string testRunJson =
+                "{\"JsonArrayOfTestConfigurations\":\"[{\\\"RampUpPeriodInSeconds\\\":10,\\\"MainRunPeriodInSeconds\\\":20,\\\"Users\\\":10,\\\"MethodName\\\":\\\"ASyncTestWebFormsGetAndPost\\\",\\\"NameSpace\\\":\\\"PerformanceDsl.Tests.Tests\\\"}]\",\"DllThatContainsTestsPath\":\"C:\\\\git\\\\PerformanceDsl\\\\PerformanceDsl.Tests\\\\PerformanceDsl.Tests\\\\bin\\\\Debug\\\\PerformanceDsl.Tests.dll\",\"TestRunIdentifier\":\"bd857c26-390f-4957-bde2-5d1c7f6d4340\"}";
             var testRun = JsonConvert.DeserializeObject<TestRun>(testRunJson);
-            var result = JsonConvert.SerializeObject(testRun);
+            string result = JsonConvert.SerializeObject(testRun);
             Console.WriteLine(result);
         }
+
         [Fact]
         public void can_accept_http_posts()
         {
@@ -26,7 +27,7 @@ namespace PerformanceDsl.TDD
             Task.Factory.StartNew(server.Start);
             WebRequest webRequest = CreateWebRequest();
 
-            using (var webResponse = (HttpWebResponse)webRequest.GetResponse())
+            using (var webResponse = (HttpWebResponse) webRequest.GetResponse())
             {
                 WebResponseInfo info = LocalHttpListener.Read(webResponse);
                 Console.WriteLine("Client received: " + info);
@@ -41,7 +42,8 @@ namespace PerformanceDsl.TDD
             webRequest.Method = "POST";
             webRequest.ContentType = "text/xml";
             webRequest.Credentials = CredentialCache.DefaultCredentials;
-            const string jsonBody = "{\"JsonArrayOfTestConfigurations\":\"[{\\\"RampUpPeriodInSeconds\\\":10,\\\"MainRunPeriodInSeconds\\\":20,\\\"Users\\\":10,\\\"MethodName\\\":\\\"ASyncTestWebFormsGetAndPost\\\",\\\"NameSpace\\\":\\\"PerformanceDsl.Tests.Tests\\\"}]\",\"DllThatContainsTestsPath\":\"C:\\\\git\\\\PerformanceDsl\\\\PerformanceDsl.Tests\\\\PerformanceDsl.Tests\\\\bin\\\\Debug\\\\PerformanceDsl.Tests.dll\",\"TestRunIdentifier\":\"bd857c26-390f-4957-bde2-5d1c7f6d4340\"}";
+            const string jsonBody =
+                "{\"JsonArrayOfTestConfigurations\":\"[{\\\"RampUpPeriodInSeconds\\\":10,\\\"MainRunPeriodInSeconds\\\":20,\\\"Users\\\":10,\\\"MethodName\\\":\\\"ASyncTestWebFormsGetAndPost\\\",\\\"NameSpace\\\":\\\"PerformanceDsl.Tests.Tests\\\"}]\",\"DllThatContainsTestsPath\":\"C:\\\\git\\\\PerformanceDsl\\\\PerformanceDsl.Tests\\\\PerformanceDsl.Tests\\\\bin\\\\Debug\\\\PerformanceDsl.Tests.dll\",\"TestRunIdentifier\":\"bd857c26-390f-4957-bde2-5d1c7f6d4340\"}";
             SetRequestBody(webRequest, jsonBody);
             return webRequest;
         }
@@ -53,6 +55,5 @@ namespace PerformanceDsl.TDD
             using (Stream requestStream = webRequest.GetRequestStream())
                 requestStream.Write(buffer, 0, buffer.Length);
         }
-
     }
 }

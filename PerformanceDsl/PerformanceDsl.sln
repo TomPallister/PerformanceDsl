@@ -10,11 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1F7040
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMvCApp", "..\TestMvCApp\TestMvCApp\TestMvCApp.csproj", "{D363B7B6-C262-4146-B0ED-F01E9C650F8C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWebFormsApp", "..\TestWebFormsApp\TestWebFormsApp\TestWebFormsApp.csproj", "{82C9DF98-D8B6-4941-8396-22B6527042F3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestRunner", "..\TestRunner\TestRunner\TestRunner.csproj", "{86CE2D81-B67D-49C9-A36B-F9F851BB4112}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceDsl.Tests", "..\PerformanceDsl.Tests\PerformanceDsl.Tests\PerformanceDsl.Tests.csproj", "{62BC1F9E-36E2-45B5-AF46-E329DBC091B9}"
 EndProject
@@ -28,6 +24,10 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TestResultStoreDb", "TestRe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agent", "Agent\Agent.csproj", "{D2C26F1C-ADD4-4DDA-93AF-F3D9FC7C762E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMvCApp", "..\TestMvCApp\testsite\TestMvCApp.csproj", "{D363B7B6-C262-4146-B0ED-F01E9C650F8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{72E9B236-2715-4B76-9C70-D8757E110B77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,18 +38,10 @@ Global
 		{AE1A50D3-C1E4-4325-A647-478BCDFBCE88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE1A50D3-C1E4-4325-A647-478BCDFBCE88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE1A50D3-C1E4-4325-A647-478BCDFBCE88}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D363B7B6-C262-4146-B0ED-F01E9C650F8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D363B7B6-C262-4146-B0ED-F01E9C650F8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D363B7B6-C262-4146-B0ED-F01E9C650F8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D363B7B6-C262-4146-B0ED-F01E9C650F8C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{82C9DF98-D8B6-4941-8396-22B6527042F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{82C9DF98-D8B6-4941-8396-22B6527042F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82C9DF98-D8B6-4941-8396-22B6527042F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82C9DF98-D8B6-4941-8396-22B6527042F3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{86CE2D81-B67D-49C9-A36B-F9F851BB4112}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{86CE2D81-B67D-49C9-A36B-F9F851BB4112}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{86CE2D81-B67D-49C9-A36B-F9F851BB4112}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{86CE2D81-B67D-49C9-A36B-F9F851BB4112}.Release|Any CPU.Build.0 = Release|Any CPU
 		{62BC1F9E-36E2-45B5-AF46-E329DBC091B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{62BC1F9E-36E2-45B5-AF46-E329DBC091B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62BC1F9E-36E2-45B5-AF46-E329DBC091B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -76,6 +68,14 @@ Global
 		{D2C26F1C-ADD4-4DDA-93AF-F3D9FC7C762E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2C26F1C-ADD4-4DDA-93AF-F3D9FC7C762E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2C26F1C-ADD4-4DDA-93AF-F3D9FC7C762E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D363B7B6-C262-4146-B0ED-F01E9C650F8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D363B7B6-C262-4146-B0ED-F01E9C650F8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D363B7B6-C262-4146-B0ED-F01E9C650F8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D363B7B6-C262-4146-B0ED-F01E9C650F8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72E9B236-2715-4B76-9C70-D8757E110B77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72E9B236-2715-4B76-9C70-D8757E110B77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72E9B236-2715-4B76-9C70-D8757E110B77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72E9B236-2715-4B76-9C70-D8757E110B77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
