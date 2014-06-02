@@ -38,7 +38,7 @@ namespace PerformanceDsl.TDD
 
         private static WebRequest CreateWebRequest()
         {
-            WebRequest webRequest = WebRequest.Create(LocalHttpListener.UriAddress);
+            WebRequest webRequest = WebRequest.Create("http://localhost:9999/");
             webRequest.Method = "POST";
             webRequest.ContentType = "text/xml";
             webRequest.Credentials = CredentialCache.DefaultCredentials;
