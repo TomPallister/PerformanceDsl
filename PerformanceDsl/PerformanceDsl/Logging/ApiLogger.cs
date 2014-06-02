@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -20,7 +21,14 @@ namespace PerformanceDsl.Logging
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 HttpResponseMessage result =
                     await httpClient.PostAsync(url, content);
-                result.EnsureSuccessStatusCode();
+                try
+                {
+                    result.EnsureSuccessStatusCode();
+                }
+                catch (Exception exception)
+                {
+                    Log4NetLogger.LogEntry(GetType(), "Log", url, LoggerLevel.Info, exception);
+                }
             }
         }
     }
