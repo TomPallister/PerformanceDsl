@@ -45,7 +45,7 @@ Agent
 There is now an agent service, install using installutil, post json at it to run tests.
 Example can be seen in the Agent project. 
 
-TestRunner
-==========
 
-The test runner is a console app of the Agent but the json object is hardcoded in the main method.
+Server
+======
+Console app to kick off tests on agents
