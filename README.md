@@ -17,6 +17,14 @@ How to
 
 of course you need to write the tests :)
 
+Performance Dsl
+===============
+Dsl to describe performance tests pretty easy to use needs work to add PUT/DELETE.
+
+PerformanceTests
+================
+Decorate Test Methods with [PerformanceTest] attribute in order for Agent to understand they are tests
+
 MvcTestApp
 ==========
 
@@ -48,4 +56,10 @@ Example can be seen in the Agent project.
 
 Server
 ======
-Console app to kick off tests on agents
+Console app to kick off tests on agents, this isnt finished and will probably read json from somewhere as a config or I'll let you pass json into it. This json will describe a Test Suite
+
+The idea is you set up a Test Suite that contains Tests that contain Test Runs and an agent hostname/ip. These Test Runs are then posted at an agent. The agent then runs the Test Configurations on the Test Run. Test Runs also hold a Guid which is used to identify the test run (for reporting purposes) and the path to the DLL on the agent machine that contains the methods tagged with the [PerformanceTest] attribute that are relevant to the Test Runs Test Configurations. At the moment a TestRun can only point to one DLL, I might change this going forward. 
+
+A Test Run can contain multiple Test Configurations that is instructions to the agent how to run a method that has been decorated with the Performance Test Attribute. Test Configurations are executed in Parallel. So I could describe two Test Configurations (one calls TestBBCHomePageGet and the other calls TestITVHomePageGet) and they are executed by the agent at the same time.
+
+In the one Test you can have multiple Test Runs
