@@ -54,13 +54,15 @@ namespace PerformanceDsl
         private async Task ExecuteTestMethods(Type type, List<TestContainer> testContainers, Guid guid,
             ApiLogger logger)
         {
-            object classInstance = Activator.CreateInstance(type, guid, logger);
+            var classInstance = Activator.CreateInstance(type, guid, logger);
             var tasks = new Task[testContainers.Count];
+
             for (int i = 0; i < testContainers.Count; i++)
             {
-                tasks[i] = ExecuteTestMethod(testContainers[i], classInstance);
+                int copy = i;
+                var task = Task.Run(() => ExecuteTestMethod(testContainers[copy], classInstance));
+                tasks[i] = task;
             }
-
             await Task.WhenAll(tasks);
         }
 

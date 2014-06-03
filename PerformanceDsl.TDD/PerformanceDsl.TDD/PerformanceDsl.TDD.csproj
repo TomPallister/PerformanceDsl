@@ -59,9 +59,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgentTests.cs" />
+    <Compile Include="ServerTests.cs" />
     <Compile Include="HttpEndpointTests.cs" />
     <Compile Include="TestRunnerTests.cs" />
-    <Compile Include="Tests.cs" />
+    <Compile Include="DslTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

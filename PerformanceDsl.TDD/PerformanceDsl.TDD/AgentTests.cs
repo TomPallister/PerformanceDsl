@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Xunit;
@@ -15,11 +12,14 @@ namespace PerformanceDsl.TDD
         [Fact]
         public async Task can_post_to_local_agent()
         {
-            const string testRunJson =
-                           "{\"TestConfigurations\":[{\"RampUpPeriodInSeconds\":5,\"MainRunPeriodInSeconds\":10,\"Users\":10,\"MethodName\":\"BbcGetRequest\",\"NameSpace\":\"PerformanceDsl.Tests.Tests\"}],\"DllThatContainsTestsPath\":\"C:\\\\Agent\\\\Tests\\\\PerformanceDsl.Tests.dll\",\"TestRunIdentifier\":\"a0c8aef3-d7e5-41a2-8d0a-27c2942ce444\"}";
-
-            var desirialisedTestRun = JsonConvert.DeserializeObject<TestRun>(testRunJson);
-            var serialisedTestRun = JsonConvert.SerializeObject(desirialisedTestRun);
+            var testConfiguration = new TestConfiguration(5, 10, 5, "BbcGetRequest", "PerformanceDsl.Tests.Tests");
+            var testRun = new TestRun
+            {
+                DllThatContainsTestsPath = "C:\\Agent\\Tests\\PerformanceDsl.Tests.dll",
+                TestRunIdentifier = Guid.NewGuid()
+            };
+            testRun.TestConfigurations.Add(testConfiguration);
+            string serialisedTestRun = JsonConvert.SerializeObject(testRun);
 
             using (var httpClient = new HttpClient())
             {
@@ -35,11 +35,14 @@ namespace PerformanceDsl.TDD
         [Fact]
         public async Task can_post_to_remote_agent()
         {
-            const string testRunJson =
-                           "{\"TestConfigurations\":[{\"RampUpPeriodInSeconds\":5,\"MainRunPeriodInSeconds\":10,\"Users\":10,\"MethodName\":\"BbcGetRequest\",\"NameSpace\":\"PerformanceDsl.Tests.Tests\"}],\"DllThatContainsTestsPath\":\"C:\\\\Agent\\\\Tests\\\\PerformanceDsl.Tests.dll\",\"TestRunIdentifier\":\"a0c8aef3-d7e5-41a2-8d0a-27c2942ce444\"}";
-
-            var desirialisedTestRun = JsonConvert.DeserializeObject<TestRun>(testRunJson);
-            var serialisedTestRun = JsonConvert.SerializeObject(desirialisedTestRun);
+            var testConfiguration = new TestConfiguration(5, 10, 5, "BbcGetRequest", "PerformanceDsl.Tests.Tests");
+            var testRun = new TestRun
+            {
+                DllThatContainsTestsPath = "C:\\Agent\\Tests\\PerformanceDsl.Tests.dll",
+                TestRunIdentifier = Guid.NewGuid()
+            };
+            testRun.TestConfigurations.Add(testConfiguration);
+            string serialisedTestRun = JsonConvert.SerializeObject(testRun);
 
             using (var httpClient = new HttpClient())
             {

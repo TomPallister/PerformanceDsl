@@ -1,5 +1,4 @@
 ﻿using System;
-using Newtonsoft.Json;
 using PerformanceDsl;
 
 namespace Server
@@ -17,12 +16,7 @@ namespace Server
                 DllThatContainsTestsPath = "C:\\Agent\\Tests\\PerformanceDsl.Tests.dll",
                 TestRunIdentifier = Guid.NewGuid()
             };
-
-
             testRun.TestConfigurations.Add(testConfiguration);
-
-            string testRunJson = JsonConvert.SerializeObject(testRun);
-
             var test = new Test
             {
                 Agent = "54.229.220.170",
@@ -30,6 +24,8 @@ namespace Server
             };
             var testSuite = new TestSuite();
             testSuite.Tests.Add(test);
+            var performanceServer = new PerformanceServer();
+            performanceServer.BeginTestRun(testSuite);
         }
     }
 }

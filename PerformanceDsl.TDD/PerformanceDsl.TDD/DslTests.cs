@@ -5,11 +5,11 @@ using Xunit;
 
 namespace PerformanceDsl.TDD
 {
-    public class Tests
+    public class DslTests
     {
         private readonly ApiLogger _logger;
 
-        public Tests()
+        public DslTests()
         {
             _logger = new ApiLogger();
         }
