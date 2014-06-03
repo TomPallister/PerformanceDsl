@@ -32,6 +32,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AWSSDK, Version=2.1.1.0, Culture=neutral, PublicKeyToken=9f476d3089b52be3, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\Net45\AWSSDK.dll</HintPath>
+    </Reference>
+    <Reference Include="Cassia">
+      <HintPath>..\..\PerformanceDsl\packages\Cassia.2.0.0.60\lib\2.0\Cassia.dll</HintPath>
+    </Reference>
     <Reference Include="FluentAssertions">
       <HintPath>..\..\PerformanceDsl\packages\FluentAssertions.3.0.107\lib\net45\FluentAssertions.dll</HintPath>
     </Reference>
