@@ -44,7 +44,7 @@ namespace PerformanceDsl
         {
             var termRequest = new TerminateInstancesRequest {InstanceIds = instanceIds};
             TerminateInstancesResponse termResponse = ec2Client.TerminateInstances(termRequest);
-            if (termResponse.HttpStatusCode != HttpStatusCode.Accepted)
+            if (termResponse.HttpStatusCode != HttpStatusCode.OK)
             {
                 throw new Exception("Agents were not terminated succesfully");
             }

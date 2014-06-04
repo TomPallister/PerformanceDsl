@@ -62,4 +62,6 @@ The idea is you set up a Test Suite that contains Tests that contain Test Runs a
 
 A Test Run can contain multiple Test Configurations that is instructions to the agent how to run a method that has been decorated with the Performance Test Attribute. Test Configurations are executed in Parallel. So I could describe two Test Configurations (one calls TestBBCHomePageGet and the other calls TestITVHomePageGet) and they are executed by the agent at the same time.
 
-In the one Test you can have multiple Test Runs
+In the one Test you can have multiple Test Runs.
+
+The server will now create AWS agents when no agent ip/hostname is specified in the TestSuite configuration. It will create the required number, assign a unique ip per Test and then wait for the agents to initialise fully before firing the tests at the agents. Once the tests have been run the server terminates the AWS agents.
