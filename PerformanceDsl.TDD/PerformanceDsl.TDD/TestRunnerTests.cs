@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using log4net.Config;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace PerformanceDsl.TDD

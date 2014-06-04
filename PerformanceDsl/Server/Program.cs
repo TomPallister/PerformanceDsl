@@ -1,5 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using PerformanceDsl;
+using PerformanceDsl.Logging;
 
 namespace Server
 {
@@ -7,25 +13,21 @@ namespace Server
     {
         private static void Main(string[] args)
         {
-            //we need to be able to run a test suite here. a test suite contains a list of Tests and they in
-            //turn are a list of test runs and the agent hostname/ip.
-            //this object needs to be passed into the test runner, may expose as http
-            var testConfiguration = new TestConfiguration(5, 10, 10, "BbcGetRequest", "PerformanceDsl.Tests.Tests");
-            var testRun = new TestRun
+            Log4NetLogger.LogEntry(typeof(Program), "Main", string.Format("config path is {0}", args[0]), LoggerLevel.Info);
+            TestSuite testSuite;
+            using (var r = new StreamReader(args[0]))
             {
-                DllThatContainsTestsPath = "C:\\Agent\\Tests\\PerformanceDsl.Tests.dll",
-                TestRunIdentifier = Guid.NewGuid()
-            };
-            testRun.TestConfigurations.Add(testConfiguration);
-            var test = new Test
-            {
-                Agent = "54.229.220.170",
-                TestRun = testRun
-            };
-            var testSuite = new TestSuite();
-            testSuite.Tests.Add(test);
+                var file = r.ReadToEnd();
+                Log4NetLogger.LogEntry(typeof(Program), "Main", string.Format("json is {0}", file), LoggerLevel.Info);
+                testSuite = JsonConvert.DeserializeObject<TestSuite>(file);
+            }   
+            Log4NetLogger.LogEntry(typeof(Program), "Main", "creating performance server", LoggerLevel.Info);
             var performanceServer = new PerformanceServer();
-            performanceServer.BeginTestRun(testSuite);
+            Log4NetLogger.LogEntry(typeof(Program), "Main", "beginning test run", LoggerLevel.Info);
+            var task = Task.Run(() => performanceServer.BeginTestRun(testSuite));
+            Log4NetLogger.LogEntry(typeof(Program), "Main", "waiting for tests to end", LoggerLevel.Info);
+            task.Wait();
+            Log4NetLogger.LogEntry(typeof(Program), "Main", "all tests have ended", LoggerLevel.Info);
         }
     }
 }

@@ -9,6 +9,7 @@ using Amazon;
 using Amazon.EC2;
 using Amazon.EC2.Model;
 using Newtonsoft.Json;
+using PerformanceDsl.Logging;
 
 namespace PerformanceDsl
 {
@@ -24,9 +25,29 @@ namespace PerformanceDsl
             //first thing we do is make sure all test runs have ips, if they dont we set them
             //up in AWS, this is very tighly coupled at the moment. we get the instance ids back so we 
             //can close them later
+            Log4NetLogger.LogEntry(GetType(), "BeginTestRun", "starting test run", LoggerLevel.Info);
             var ec2Client = new AmazonEC2Client(RegionEndpoint.EUWest1);
+            Log4NetLogger.LogEntry(GetType(), "BeginTestRun", "created EC2 client, now assiging ips", LoggerLevel.Info);
             List<string> instanceIds = AssignAgentIps(ec2Client, testSuite);
-            //once we are all good we run the tests. This should prob be a private method..
+            Log4NetLogger.LogEntry(GetType(), "BeginTestRun", "assigned ips if there were any required, about to run tests", LoggerLevel.Info);
+
+            //once we are all good we run the tests. 
+            await Run(testSuite);
+            Log4NetLogger.LogEntry(GetType(), "BeginTestRun", "tests have finished running, now terminate any agents", LoggerLevel.Info);
+            //we return null from AssignAgentIps if we dont need any IPs, bad programming but it will do 
+            //for now.
+            if (instanceIds != null)
+            {
+                Log4NetLogger.LogEntry(GetType(), "BeginTestRun", "terminating agents", LoggerLevel.Info);
+                //terminate the agents LIKE A BAUSSSSSSSSSSS
+                TerminateAgents(ec2Client, instanceIds);
+                Log4NetLogger.LogEntry(GetType(), "BeginTestRun", "terminated agents", LoggerLevel.Info);
+            }
+        }
+
+        private async Task Run(TestSuite testSuite)
+        {
+            Log4NetLogger.LogEntry(GetType(), "Run", "starting to send tests to agents", LoggerLevel.Info);
             var tasks = new Task[testSuite.Tests.Count];
             for (int i = 0; i < testSuite.Tests.Count; i++)
             {
@@ -34,10 +55,11 @@ namespace PerformanceDsl
                 Task task = Task.Run(() => PostToAgent(testSuite.Tests[copy].Agent, testSuite.Tests[copy].TestRun));
                 tasks[i] = task;
             }
+            Log4NetLogger.LogEntry(GetType(), "Run", "finished sending tests to agents", LoggerLevel.Info);
             //wait for all the tasks to finish
             await Task.WhenAll(tasks);
-            //terminate the agents LIKE A BAUSSSSSSSSSSS
-            TerminateAgents(ec2Client, instanceIds);
+            Log4NetLogger.LogEntry(GetType(), "Run", "all tasks finished returning", LoggerLevel.Info);
+
         }
 
         private void TerminateAgents(AmazonEC2Client ec2Client, List<string> instanceIds)
@@ -52,6 +74,7 @@ namespace PerformanceDsl
 
         private async Task PostToAgent(string agent, TestRun testRun)
         {
+            Log4NetLogger.LogEntry(GetType(), "PostToAgent", "posting testrun to agent", LoggerLevel.Info);
             string testRunJson = JsonConvert.SerializeObject(testRun);
             using (var httpClient = new HttpClient())
             {
@@ -62,6 +85,7 @@ namespace PerformanceDsl
                     await httpClient.PostAsync(string.Format("http://{0}:9999", agent), content);
                 result.EnsureSuccessStatusCode();
             }
+            Log4NetLogger.LogEntry(GetType(), "PostToAgent", "finished posting testrun to agent", LoggerLevel.Info);
         }
 
         public List<string> AssignAgentIps(AmazonEC2Client ec2Client, TestSuite testSuite)

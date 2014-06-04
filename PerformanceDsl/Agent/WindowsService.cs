@@ -1,6 +1,7 @@
 ﻿using System.ServiceProcess;
 using System.Threading.Tasks;
 using PerformanceDsl;
+using PerformanceDsl.Logging;
 
 namespace Agent
 {
@@ -43,8 +44,11 @@ namespace Agent
         /// <param name="args"></param>
         protected override void OnStart(string[] args)
         {
+            Log4NetLogger.LogEntry(GetType(), "OnStart", "creating http listener", LoggerLevel.Info);
             var server = new LocalHttpListener();
+            Log4NetLogger.LogEntry(GetType(), "OnStart", "creating task", LoggerLevel.Info);
             Task.Factory.StartNew(server.Start);
+            Log4NetLogger.LogEntry(GetType(), "OnStart", "calling on start", LoggerLevel.Info);
             base.OnStart(args);
         }
 

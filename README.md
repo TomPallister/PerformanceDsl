@@ -52,6 +52,7 @@ Agent
 
 There is now an agent service, install using installutil, post json at it to run tests.
 Example can be seen in the Agent project. 
+The agents have to run on port 9999 at the moment, this should be changed at some point I guess.
 
 
 Server
@@ -65,3 +66,5 @@ A Test Run can contain multiple Test Configurations that is instructions to the 
 In the one Test you can have multiple Test Runs.
 
 The server will now create AWS agents when no agent ip/hostname is specified in the TestSuite configuration. It will create the required number, assign a unique ip per Test and then wait for the agents to initialise fully before firing the tests at the agents. Once the tests have been run the server terminates the AWS agents.
+
+The server now accepts a .json config file as a parameter passed in via the usual manner. This can now be kicked off by Jenkins. An exmaple file can be found Server/Configs/example.json

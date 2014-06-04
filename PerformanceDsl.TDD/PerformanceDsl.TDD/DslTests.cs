@@ -17,28 +17,28 @@ namespace PerformanceDsl.TDD
         [Fact]
         public async Task can_register_user_on_web_forms_app_async()
         {
-            var tests = new PerformanceDsl.Tests.Tests(Guid.NewGuid(), _logger);
+            var tests = new Tests.Tests(Guid.NewGuid(), _logger);
             await tests.ASyncTestWebFormsGetAndPost();
         }
 
         [Fact]
         public async Task can_get_from_mvc_app_async()
         {
-            var tests = new PerformanceDsl.Tests.Tests(Guid.NewGuid(), _logger);
+            var tests = new Tests.Tests(Guid.NewGuid(), _logger);
             await tests.ASyncTestMvcGetRequest();
         }
 
         [Fact]
         public async Task can_post_to_mvc_app_async()
         {
-            var tests = new PerformanceDsl.Tests.Tests(Guid.NewGuid(), _logger);
+            var tests = new Tests.Tests(Guid.NewGuid(), _logger);
             await tests.ASyncTestMvcPostRequest();
         }
 
         [Fact]
         public async Task can_get_from_bbc()
         {
-            var tests = new PerformanceDsl.Tests.Tests(Guid.NewGuid(), _logger);
+            var tests = new Tests.Tests(Guid.NewGuid(), _logger);
             await tests.BbcGetRequest();
         }
     }
