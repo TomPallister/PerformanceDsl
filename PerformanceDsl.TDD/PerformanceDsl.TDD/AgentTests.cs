@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -9,6 +12,22 @@ namespace PerformanceDsl.TDD
 {
     public class AgentTests
     {
+        [Fact]
+        public async Task can_post_dll_to_local_agent()
+        {
+
+            const string fileName =
+                @"C:\git\PerformanceDsl\PerformanceDsl.Tests\PerformanceDsl.Tests\bin\Debug\PerformanceDsl.Tests.dll";
+            const string requestUri = "http://localhost:9999";
+
+
+            using (var client = new WebClient())
+            {
+                client.Headers.Add("FileName", "PerformanceDsl.Tests.dll");
+                client.UploadFile(requestUri, fileName);
+            }
+        }
+
         [Fact]
         public async Task can_post_to_local_agent()
         {

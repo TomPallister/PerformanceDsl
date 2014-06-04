@@ -7,8 +7,11 @@ namespace PerformanceDsl
         public TestSuite()
         {
             Tests = new List<Test>();
+            DllsThatNeedUploadingToAgent = new List<string>();
         }
 
         public List<Test> Tests { get; set; }
+
+        public List<string> DllsThatNeedUploadingToAgent { get; set; } 
     }
 }

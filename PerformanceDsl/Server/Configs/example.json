@@ -6,22 +6,22 @@
           {
             "RampUpPeriodInSeconds": 5,
             "MainRunPeriodInSeconds": 10,
-            "Users": 10,
+            "Users": 5,
             "MethodName": "BbcGetRequest",
             "NameSpace": "PerformanceDsl.Tests.Tests"
           },
           {
             "RampUpPeriodInSeconds": 5,
             "MainRunPeriodInSeconds": 10,
-            "Users": 10,
+            "Users": 5,
             "MethodName": "BbcGetRequest",
             "NameSpace": "PerformanceDsl.Tests.Tests"
           }
         ],
         "DllThatContainsTestsPath": "C:\\Agent\\Tests\\PerformanceDsl.Tests.dll",
-        "TestRunIdentifier": "673f5da9-9f0d-474d-b479-10ecbe04c6bf"
+        "TestRunIdentifier": "73b4d3e0-29dd-40d4-b9c7-dc00ffd7f20f"
       },
-      "Agent": "54.76.143.174"
+      "Agent": "localhost"
     },
     {
       "TestRun": {
@@ -29,22 +29,19 @@
           {
             "RampUpPeriodInSeconds": 5,
             "MainRunPeriodInSeconds": 10,
-            "Users": 10,
-            "MethodName": "BbcGetRequest",
-            "NameSpace": "PerformanceDsl.Tests.Tests"
-          },
-          {
-            "RampUpPeriodInSeconds": 5,
-            "MainRunPeriodInSeconds": 10,
-            "Users": 10,
+            "Users": 5,
             "MethodName": "BbcGetRequest",
             "NameSpace": "PerformanceDsl.Tests.Tests"
           }
         ],
         "DllThatContainsTestsPath": "C:\\Agent\\Tests\\PerformanceDsl.Tests.dll",
-        "TestRunIdentifier": "673f5da9-9f0d-474d-b479-10ecbe04c6bf"
+        "TestRunIdentifier": "73b4d3e0-29dd-40d4-b9c7-dc00ffd7f20f"
       },
-      "Agent": "54.76.143.174"
+      "Agent": "localhost"
     }
+  ],
+  "DllsThatNeedUploadingToAgent": [
+    "C:\\git\\PerformanceDsl\\PerformanceDsl.Tests\\PerformanceDsl.Tests\\bin\\Debug\\PerformanceDsl.Tests.dll",
+    "C:\\git\\PerformanceDsl\\PerformanceDsl.Tests\\PerformanceDsl.Tests\\bin\\Debug\\PerformanceDsl.Tests.dll"
   ]
 }

@@ -30,6 +30,9 @@ namespace PerformanceDsl
             Log4NetLogger.LogEntry(GetType(), "BeginTestRun", "created EC2 client, now assiging ips", LoggerLevel.Info);
             List<string> instanceIds = AssignAgentIps(ec2Client, testSuite);
             Log4NetLogger.LogEntry(GetType(), "BeginTestRun", "assigned ips if there were any required, about to run tests", LoggerLevel.Info);
+            //now we need to send our dlls to the agents
+            UploadDllsToAgents(testSuite);
+
 
             //once we are all good we run the tests. 
             await Run(testSuite);
@@ -43,6 +46,39 @@ namespace PerformanceDsl
                 TerminateAgents(ec2Client, instanceIds);
                 Log4NetLogger.LogEntry(GetType(), "BeginTestRun", "terminated agents", LoggerLevel.Info);
             }
+        }
+
+        public void UploadDllsToAgents(TestSuite testSuite)
+        {
+            if (testSuite.DllsThatNeedUploadingToAgent.Count > 0)
+            {
+                var agentIps = testSuite.Tests.Select(x => x.Agent);
+                foreach (var agentIp in agentIps)
+                {
+                    foreach (var dll in testSuite.DllsThatNeedUploadingToAgent)
+                    {
+                        var fileName = GetFileName(dll);
+
+                        UploadFile(fileName, string.Format("http://{0}:9999", agentIp), dll);
+                    }
+                }
+            }
+        }
+
+        private void UploadFile(string fileName, string url, string filePath)
+        {
+            using (var client = new WebClient())
+            {
+                client.Headers.Add("FileName", fileName);
+                client.UploadFile(new Uri(url), filePath);
+            }
+        }
+
+        private string GetFileName(string filePath)
+        {
+            var lastIndex = filePath.LastIndexOf("\\", StringComparison.Ordinal);
+            var fileName = filePath.Substring(lastIndex + 1);
+            return fileName;
         }
 
         private async Task Run(TestSuite testSuite)
@@ -96,7 +132,7 @@ namespace PerformanceDsl
             {
                 var runInstancesRequest = new RunInstancesRequest
                 {
-                    ImageId = "ami-77498500",
+                    ImageId = "ami-df844ba8",
                     InstanceType = "t1.micro",
                     MinCount = requiredInstances,
                     MaxCount = requiredInstances,

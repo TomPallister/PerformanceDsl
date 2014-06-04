@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -62,42 +63,57 @@ namespace PerformanceDsl
             }
         }
 
-        public static WebRequestInfo Read(HttpListenerRequest request)
+        /// <summary>
+        ///     This method realllllly needs sorting out now.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public WebRequestInfo Read(HttpListenerRequest request)
         {
             var info = new WebRequestInfo {HttpMethod = request.HttpMethod, Url = request.Url};
-
-            if (request.HasEntityBody)
+            //check to see if this is a json post, which indicates a test run rather than a file upload.
+            if (request.ContentType == "application/json")
             {
-                Encoding encoding = request.ContentEncoding;
-                using (Stream bodyStream = request.InputStream)
-                using (var streamReader = new StreamReader(bodyStream, encoding))
+                if (request.HasEntityBody)
                 {
-                    if (request.ContentType != null)
-                        info.ContentType = request.ContentType;
+                    Encoding encoding = request.ContentEncoding;
+                    using (Stream bodyStream = request.InputStream)
+                    using (var streamReader = new StreamReader(bodyStream, encoding))
+                    {
+                        if (request.ContentType != null)
+                            info.ContentType = request.ContentType;
 
-                    info.ContentLength = request.ContentLength64;
-                    info.Body = streamReader.ReadToEnd();
+                        info.ContentLength = request.ContentLength64;
+                        info.Body = streamReader.ReadToEnd();
+                    }
+                }
+                Log4NetLogger.LogEntry(typeof (LocalHttpListener), "Read", info.Body, LoggerLevel.Info);
+                var testRunner = new TestRunner();
+                try
+                {
+                    var testRun = JsonConvert.DeserializeObject<TestRun>(info.Body);
+                    Task task = testRunner.Begin(testRun);
+                    task.ContinueWith(x =>
+                    {
+                        Console.WriteLine(x.Status.ToString());
+                        Console.WriteLine("end");
+                    });
+                    task.Wait();
+                    return info;
+                }
+                catch (Exception exception)
+                {
+                    Log4NetLogger.LogEntry(typeof (LocalHttpListener), "Read", info.Body, LoggerLevel.Error, exception);
+                    return null;
                 }
             }
-            Log4NetLogger.LogEntry(typeof (LocalHttpListener), "Read", info.Body, LoggerLevel.Info);
-            var testRunner = new TestRunner();
-            try
+            string fileName = request.Headers["FileName"];
+            if (fileName != null)
             {
-                var testRun = JsonConvert.DeserializeObject<TestRun>(info.Body);
-                Task task = testRunner.Begin(testRun);
-                task.ContinueWith(x =>
-                {
-                    Console.WriteLine(x.Status.ToString());
-                    Console.WriteLine("end");
-                });
-                task.Wait();
-                return info;
+                SaveFile(request.ContentEncoding, GetBoundary(request.ContentType), request.InputStream, fileName);
+                info.Body = "File Uploaded";
             }
-            catch (Exception exception)
-            {
-                Log4NetLogger.LogEntry(typeof (LocalHttpListener), "Read", info.Body, LoggerLevel.Error, exception);
-                return null;
-            }
+            return info;
         }
 
         public static WebResponseInfo Read(HttpWebResponse response)
@@ -130,6 +146,102 @@ namespace PerformanceDsl
             response.ContentLength64 = buffer.Length;
             response.OutputStream.Write(buffer, 0, buffer.Length);
             response.OutputStream.Close();
+        }
+
+        private String GetBoundary(String ctype)
+        {
+            return "--" + ctype.Split(';')[1].Split('=')[1];
+        }
+
+        private void SaveFile(Encoding enc, String boundary, Stream input, string fileName)
+        {
+            string path = ConfigurationManager.AppSettings["DllPath"];
+            string pathToSave = string.Format("{0}\\{1}", path, fileName);
+            Byte[] boundaryBytes = enc.GetBytes(boundary);
+            Int32 boundaryLen = boundaryBytes.Length;
+
+            using (var output = new FileStream(pathToSave, FileMode.Create, FileAccess.Write))
+            {
+                var buffer = new Byte[1024];
+                Int32 len = input.Read(buffer, 0, 1024);
+                Int32 startPos = -1;
+
+                // Find start boundary
+                while (true)
+                {
+                    if (len == 0)
+                    {
+                        throw new Exception("Start Boundaray Not Found");
+                    }
+
+                    startPos = IndexOf(buffer, len, boundaryBytes);
+                    if (startPos >= 0)
+                    {
+                        break;
+                    }
+                    Array.Copy(buffer, len - boundaryLen, buffer, 0, boundaryLen);
+                    len = input.Read(buffer, boundaryLen, 1024 - boundaryLen);
+                }
+
+                // Skip four lines (Boundary, Content-Disposition, Content-Type, and a blank)
+                for (Int32 i = 0; i < 4; i++)
+                {
+                    while (true)
+                    {
+                        if (len == 0)
+                        {
+                            throw new Exception("Preamble not Found.");
+                        }
+
+                        startPos = Array.IndexOf(buffer, enc.GetBytes("\n")[0], startPos);
+                        if (startPos >= 0)
+                        {
+                            startPos++;
+                            break;
+                        }
+                        len = input.Read(buffer, 0, 1024);
+                    }
+                }
+
+                Array.Copy(buffer, startPos, buffer, 0, len - startPos);
+                len = len - startPos;
+
+                while (true)
+                {
+                    Int32 endPos = IndexOf(buffer, len, boundaryBytes);
+                    if (endPos >= 0)
+                    {
+                        if (endPos > 0) output.Write(buffer, 0, endPos);
+                        break;
+                    }
+                    if (len <= boundaryLen)
+                    {
+                        throw new Exception("End Boundaray Not Found");
+                    }
+                    output.Write(buffer, 0, len - boundaryLen);
+                    Array.Copy(buffer, len - boundaryLen, buffer, 0, boundaryLen);
+                    len = input.Read(buffer, boundaryLen, 1024 - boundaryLen) + boundaryLen;
+                }
+            }
+        }
+
+        private static Int32 IndexOf(Byte[] buffer, Int32 len, Byte[] boundaryBytes)
+        {
+            for (Int32 i = 0; i <= len - boundaryBytes.Length; i++)
+            {
+                Boolean match = true;
+                for (Int32 j = 0; j < boundaryBytes.Length && match; j++)
+                {
+                    match = buffer[i + j] == boundaryBytes[j];
+                }
+
+                if (match)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
     }
 

@@ -1,15 +1,40 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon;
 using Amazon.EC2;
 using FluentAssertions;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace PerformanceDsl.TDD
 {
     public class ServerTests
     {
+        [Fact]
+        public async Task can_upload_dll_to_agent()
+        {
+            var testConfiguration = new TestConfiguration(5, 10, 5, "BbcGetRequest", "PerformanceDsl.Tests.Tests");
+            var testRun = new TestRun
+            {
+                DllThatContainsTestsPath = "C:\\Agent\\Tests\\PerformanceDsl.Tests.dll",
+                TestRunIdentifier = Guid.NewGuid()
+            };
+            testRun.TestConfigurations.Add(testConfiguration);
+            var test = new Test
+            {
+                Agent = "localhost",
+                TestRun = testRun
+            };
+            var testSuite = new TestSuite();
+            testSuite.Tests.Add(test);
+            testSuite.DllsThatNeedUploadingToAgent.Add(@"C:\git\PerformanceDsl\PerformanceDsl.Tests\PerformanceDsl.Tests\bin\Debug\PerformanceDsl.Tests.dll");
+            var performanceServer = new PerformanceServer();
+            await performanceServer.BeginTestRun(testSuite);
+        }
+
+
         [Fact]
         public async Task can_send_test_to_agent()
         {
@@ -188,6 +213,7 @@ namespace PerformanceDsl.TDD
                 TestRunIdentifier = Guid.NewGuid()
             };
             testRun.TestConfigurations.Add(testConfiguration);
+            testRun.TestConfigurations.Add(testConfiguration);
             var test = new Test
             {
                 Agent = "localhost",
@@ -209,6 +235,8 @@ namespace PerformanceDsl.TDD
                 TestRun = testRun
             };
             testSuite.Tests.Add(test);
+            testSuite.DllsThatNeedUploadingToAgent.Add(@"C:\git\PerformanceDsl\PerformanceDsl.Tests\PerformanceDsl.Tests\bin\Debug\PerformanceDsl.Tests.dll");
+            testSuite.DllsThatNeedUploadingToAgent.Add(@"C:\git\PerformanceDsl\PerformanceDsl.Tests\PerformanceDsl.Tests\bin\Debug\PerformanceDsl.Tests.dll");
             var performanceServer = new PerformanceServer();
             await performanceServer.BeginTestRun(testSuite);
         }
