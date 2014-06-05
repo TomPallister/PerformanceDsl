@@ -21,7 +21,7 @@
         "DllThatContainsTestsPath": "C:\\Agent\\Tests\\PerformanceDsl.Tests.dll",
         "TestRunIdentifier": "73b4d3e0-29dd-40d4-b9c7-dc00ffd7f20f"
       },
-      "Agent": "localhost"
+      "Agent": null
     },
     {
       "TestRun": {
@@ -37,7 +37,7 @@
         "DllThatContainsTestsPath": "C:\\Agent\\Tests\\PerformanceDsl.Tests.dll",
         "TestRunIdentifier": "73b4d3e0-29dd-40d4-b9c7-dc00ffd7f20f"
       },
-      "Agent": "localhost"
+      "Agent": null
     }
   ],
   "DllsThatNeedUploadingToAgent": [
