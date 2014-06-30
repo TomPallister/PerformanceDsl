@@ -54,7 +54,7 @@ namespace PerformanceDsl.Tests
 
             await scenario.
                 Exec("Get Values")
-                .Get(string.Format("{0}{1}", hostUrl, "api/values"));
+                .Get(hostUrl);
         }
 
         [PerformanceTest]

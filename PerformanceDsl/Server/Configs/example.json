@@ -5,43 +5,43 @@
         "TestConfigurations": [
           {
             "RampUpPeriodInSeconds": 5,
-            "MainRunPeriodInSeconds": 10,
-            "Users": 5,
-            "MethodName": "BbcGetRequest",
-            "NameSpace": "PerformanceDsl.Tests.Tests"
+            "MainRunPeriodInSeconds": 20,
+            "Users": 20,
+            "MethodName": "can_create_purchase_order",
+            "NameSpace": "Fourth.R9.PerformanceTests.LoginTests"
           },
           {
             "RampUpPeriodInSeconds": 5,
             "MainRunPeriodInSeconds": 10,
-            "Users": 5,
-            "MethodName": "BbcGetRequest",
-            "NameSpace": "PerformanceDsl.Tests.Tests"
+            "Users": 20,
+            "MethodName": "can_login",
+            "NameSpace": "Fourth.R9.PerformanceTests.LoginTests"
           }
         ],
-        "DllThatContainsTestsPath": "C:\\Agent\\Tests\\PerformanceDsl.Tests.dll",
+        "DllThatContainsTestsPath": "C:\\git\\TestPerformance\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\bin\\Debug\\Fourth.R9.PerformanceTests.dll",
         "TestRunIdentifier": "73b4d3e0-29dd-40d4-b9c7-dc00ffd7f20f"
       },
-      "Agent": null
+      "Agent": "127.0.0.1"
     },
     {
       "TestRun": {
         "TestConfigurations": [
           {
             "RampUpPeriodInSeconds": 5,
-            "MainRunPeriodInSeconds": 10,
-            "Users": 5,
-            "MethodName": "BbcGetRequest",
-            "NameSpace": "PerformanceDsl.Tests.Tests"
+            "MainRunPeriodInSeconds": 20,
+            "Users": 20,
+            "MethodName": "can_create_purchase_order",
+            "NameSpace": "Fourth.R9.PerformanceTests.LoginTests"
           }
         ],
-        "DllThatContainsTestsPath": "C:\\Agent\\Tests\\PerformanceDsl.Tests.dll",
+        "DllThatContainsTestsPath": "C:\\git\\TestPerformance\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\bin\\Debug\\Fourth.R9.PerformanceTests.dll",
         "TestRunIdentifier": "73b4d3e0-29dd-40d4-b9c7-dc00ffd7f20f"
       },
-      "Agent": null
+      "Agent": "127.0.0.1"
     }
   ],
   "DllsThatNeedUploadingToAgent": [
-    "C:\\git\\PerformanceDsl\\PerformanceDsl.Tests\\PerformanceDsl.Tests\\bin\\Debug\\PerformanceDsl.Tests.dll",
-    "C:\\git\\PerformanceDsl\\PerformanceDsl.Tests\\PerformanceDsl.Tests\\bin\\Debug\\PerformanceDsl.Tests.dll"
+    "C:\\git\\TestPerformance\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\bin\\Debug\\Fourth.R9.PerformanceTests.dll",
+    "C:\\git\\TestPerformance\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\bin\\Debug\\Fourth.R9.Domain.dll"
   ]
 }

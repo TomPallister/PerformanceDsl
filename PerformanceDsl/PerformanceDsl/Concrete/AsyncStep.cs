@@ -16,7 +16,7 @@ namespace PerformanceDsl.Concrete
         private readonly string _stepName;
 
         public AsyncStep(string stepName, AsyncScenario scenario, string currentEventValidation,
-            string currentViewState, CookieContainer container, string currentHtml, ApiLogger logger, Guid guid)
+            string currentViewState, CookieContainer container, string currentHtml, ApiLogger logger, Guid guid, string currentEventTarget)
             : base(new HttpClientHandler
             {
                 CookieContainer = container,
@@ -25,12 +25,20 @@ namespace PerformanceDsl.Concrete
                 currentEventValidation,
                 currentViewState,
                 currentHtml,
+                currentEventTarget,
                 guid)
         {
             _scenario = scenario;
             FormContent = new List<KeyValuePair<string, string>>();
             _logger = logger;
             _stepName = stepName;
+            Headers = new List<KeyValuePair<string, string>>();
+        }
+
+        public AsyncStep CustomHeader(string name, string value)
+        {
+            Headers.Add(new KeyValuePair<string, string>(name, value));
+            return this;
         }
 
         public AsyncStep FormData(string name, string value)

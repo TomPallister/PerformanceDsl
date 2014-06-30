@@ -11,9 +11,11 @@ namespace PerformanceDsl.Abstract
     public abstract class RequestBase : HttpClient
     {
         protected string CurrentEventValidation;
+        protected string CurrentEventTarget;
         protected string CurrentHtml;
         protected string CurrentViewState;
         protected List<KeyValuePair<string, string>> FormContent;
+        protected List<KeyValuePair<string, string>> Headers;
         protected Guid Guid;
         protected HttpContent HttpContent;
         protected string JsonContent;
@@ -25,12 +27,14 @@ namespace PerformanceDsl.Abstract
             string currentEventValidation,
             string currentViewState,
             string currentHtml,
+            string currentEventTarget,
             Guid guid)
             : base(handler)
         {
             CurrentEventValidation = currentEventValidation;
             CurrentHtml = currentHtml;
             CurrentViewState = currentViewState;
+            CurrentEventTarget = currentEventTarget;
             Guid = guid;
             SetUpDefaultHeaders();
         }
@@ -47,6 +51,12 @@ namespace PerformanceDsl.Abstract
             {
                 CurrentViewState = HttpScraper.GetViewStateFromHtml(html);
             }
+
+            if (html.Contains("__EVENTTARGET"))
+            {
+                CurrentEventTarget = HttpScraper.GetEventTargetFromHtml(html);
+            }
+
         }
 
         public void SetCurrentHtml(string html)
@@ -65,6 +75,13 @@ namespace PerformanceDsl.Abstract
                 HttpContent = new StringContent(JsonContent);
                 HttpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 HttpContent.Headers.ContentType = new MediaTypeHeaderValue("text/json");
+            }
+            if (Headers.Count > 0)
+            {
+                foreach (var header in Headers)
+                {
+                    DefaultRequestHeaders.Add(header.Key, header.Value);
+                }
             }
         }
 

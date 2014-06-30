@@ -22,6 +22,7 @@ namespace PerformanceDsl.Concrete
         public string CurrentEventValidation { get; set; }
         public string CurrentHtml { get; set; }
         public string CurrentViewState { get; set; }
+        public string CurrentEventTarget { get; set; }
 
         public string ScenarioName
         {
@@ -31,7 +32,7 @@ namespace PerformanceDsl.Concrete
         public AsyncStep Exec(string stepName)
         {
             return new AsyncStep(stepName, this, CurrentEventValidation, CurrentViewState, _cookieContainer, CurrentHtml,
-                _logger, _guid);
+                _logger, _guid, CurrentEventTarget);
         }
     }
 }
