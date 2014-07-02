@@ -104,6 +104,7 @@
   <ItemGroup>
     <Compile Include="Concrete\AsyncScenario.cs" />
     <Compile Include="Concrete\AsyncStep.cs" />
+    <Compile Include="Extensions\List.cs" />
     <Compile Include="Helpers\HttpScraper.cs" />
     <Compile Include="LocalHttpListener.cs" />
     <Compile Include="Logging\ApiLogger.cs" />
@@ -152,9 +153,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
