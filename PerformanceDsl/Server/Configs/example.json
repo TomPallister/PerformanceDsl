@@ -8,14 +8,14 @@
             "MainRunPeriodInSeconds": 20,
             "Users": 20,
             "MethodName": "can_create_purchase_order",
-            "NameSpace": "Fourth.R9.PerformanceTests.LoginTests"
+            "NameSpace": "Fourth.R9.PerformanceTests.AllTests"
           },
           {
             "RampUpPeriodInSeconds": 5,
             "MainRunPeriodInSeconds": 10,
             "Users": 20,
             "MethodName": "can_login",
-            "NameSpace": "Fourth.R9.PerformanceTests.LoginTests"
+            "NameSpace": "Fourth.R9.PerformanceTests.AllTests"
           }
         ],
         "DllThatContainsTestsPath": "C:\\git\\TestPerformance\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\bin\\Debug\\Fourth.R9.PerformanceTests.dll",

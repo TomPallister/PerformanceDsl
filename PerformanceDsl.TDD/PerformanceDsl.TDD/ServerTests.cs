@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
-using Amazon;
-using Amazon.EC2;
-using FluentAssertions;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace PerformanceDsl.TDD
@@ -29,7 +23,8 @@ namespace PerformanceDsl.TDD
             };
             var testSuite = new TestSuite();
             testSuite.Tests.Add(test);
-            testSuite.DllsThatNeedUploadingToAgent.Add(@"C:\git\PerformanceDsl\PerformanceDsl.Tests\PerformanceDsl.Tests\bin\Debug\PerformanceDsl.Tests.dll");
+            testSuite.DllsThatNeedUploadingToAgent.Add(
+                @"C:\git\PerformanceDsl\PerformanceDsl.Tests\PerformanceDsl.Tests\bin\Debug\PerformanceDsl.Tests.dll");
             var performanceServer = new PerformanceServer();
             await performanceServer.BeginTestRun(testSuite);
         }
@@ -78,32 +73,6 @@ namespace PerformanceDsl.TDD
         }
 
         [Fact]
-        public async Task can_assign_aws_ips_testruns_that_dont_already_have_agent_ip()
-        {
-            var testConfiguration = new TestConfiguration(5, 10, 5, "BbcGetRequest", "PerformanceDsl.Tests.Tests");
-            var testRun = new TestRun
-            {
-                DllThatContainsTestsPath = "C:\\Agent\\Tests\\PerformanceDsl.Tests.dll",
-                TestRunIdentifier = Guid.NewGuid()
-            };
-            testRun.TestConfigurations.Add(testConfiguration);
-            var test = new Test
-            {
-                Agent = null,
-                TestRun = testRun
-            };
-            var testSuite = new TestSuite();
-            testSuite.Tests.Add(test);
-            var performanceServer = new PerformanceServer();
-            var ec2Client = new AmazonEC2Client(RegionEndpoint.EUWest1);
-
-            performanceServer.AssignAgentIps(ec2Client, testSuite);
-
-            bool result = testSuite.Tests.Any(x => !string.IsNullOrWhiteSpace(x.Agent));
-            result.Should().BeTrue();
-        }
-
-        [Fact]
         public async Task can_assign_multiple_aws_ips_testruns_that_dont_already_have_agent_ip()
         {
             var testConfiguration = new TestConfiguration(5, 10, 5, "BbcGetRequest", "PerformanceDsl.Tests.Tests");
@@ -129,50 +98,6 @@ namespace PerformanceDsl.TDD
             test = new Test
             {
                 Agent = null,
-                TestRun = testRun
-            };
-            testSuite.Tests.Add(test);
-            var performanceServer = new PerformanceServer();
-            var ec2Client = new AmazonEC2Client(RegionEndpoint.EUWest1);
-
-            performanceServer.AssignAgentIps(ec2Client, testSuite);
-            bool result = testSuite.Tests.Any(x => !string.IsNullOrWhiteSpace(x.Agent));
-            result.Should().BeTrue();
-        }
-
-        [Fact]
-        public async Task can_send_tests_to_two_agents()
-        {
-            string agentOne = "54.76.143.174";
-            string agentTwo = "54.76.150.16";
-            Guid testRunGuid = Guid.NewGuid();
-
-            //test one to agent one
-            var testConfiguration = new TestConfiguration(5, 10, 5, "BbcGetRequest", "PerformanceDsl.Tests.Tests");
-            var testRun = new TestRun
-            {
-                DllThatContainsTestsPath = "C:\\Agent\\Tests\\PerformanceDsl.Tests.dll",
-                TestRunIdentifier = testRunGuid
-            };
-            testRun.TestConfigurations.Add(testConfiguration);
-            var test = new Test
-            {
-                Agent = agentOne,
-                TestRun = testRun
-            };
-            var testSuite = new TestSuite();
-            testSuite.Tests.Add(test);
-            //test two to agent two
-            testConfiguration = new TestConfiguration(5, 10, 5, "BbcGetRequest", "PerformanceDsl.Tests.Tests");
-            testRun = new TestRun
-            {
-                DllThatContainsTestsPath = "C:\\Agent\\Tests\\PerformanceDsl.Tests.dll",
-                TestRunIdentifier = testRunGuid
-            };
-            testRun.TestConfigurations.Add(testConfiguration);
-            test = new Test
-            {
-                Agent = agentTwo,
                 TestRun = testRun
             };
             testSuite.Tests.Add(test);
@@ -235,8 +160,10 @@ namespace PerformanceDsl.TDD
                 TestRun = testRun
             };
             testSuite.Tests.Add(test);
-            testSuite.DllsThatNeedUploadingToAgent.Add(@"C:\git\PerformanceDsl\PerformanceDsl.Tests\PerformanceDsl.Tests\bin\Debug\PerformanceDsl.Tests.dll");
-            testSuite.DllsThatNeedUploadingToAgent.Add(@"C:\git\PerformanceDsl\PerformanceDsl.Tests\PerformanceDsl.Tests\bin\Debug\PerformanceDsl.Tests.dll");
+            testSuite.DllsThatNeedUploadingToAgent.Add(
+                @"C:\git\PerformanceDsl\PerformanceDsl.Tests\PerformanceDsl.Tests\bin\Debug\PerformanceDsl.Tests.dll");
+            testSuite.DllsThatNeedUploadingToAgent.Add(
+                @"C:\git\PerformanceDsl\PerformanceDsl.Tests\PerformanceDsl.Tests\bin\Debug\PerformanceDsl.Tests.dll");
             var performanceServer = new PerformanceServer();
             await performanceServer.BeginTestRun(testSuite);
         }
