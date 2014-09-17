@@ -128,6 +128,10 @@
   <ItemGroup>
     <Compile Include="Concrete\AsyncScenario.cs" />
     <Compile Include="Concrete\AsyncStep.cs" />
+    <Compile Include="ResultStore\RowSummary.cs" />
+    <Compile Include="ResultStore\RunSummary.cs" />
+    <Compile Include="RunEntity.cs" />
+    <Compile Include="Helpers\StringCompression.cs" />
     <Compile Include="ResultEntity.cs" />
     <Compile Include="Extensions\List.cs" />
     <Compile Include="Helpers\HttpScraper.cs" />
@@ -142,6 +146,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Abstract\RequestBase.cs" />
     <Compile Include="Result.cs" />
+    <Compile Include="ResultStore\AzureTestRunDatabase.cs" />
+    <Compile Include="ResultStore\ITestRunDatabase.cs" />
+    <Compile Include="ResultStore\TestRunService.cs" />
+    <Compile Include="ResultStore\ITestRunService.cs" />
     <Compile Include="ResultStore\SqlTestResultDatabase.cs" />
     <Compile Include="ResultStore\Infrastructure\BulkCopy.cs" />
     <Compile Include="ResultStore\Infrastructure\Class1.cs" />
@@ -168,6 +176,7 @@
     <Compile Include="ResultStore\InMemoryTestResultDatabase.cs" />
     <Compile Include="ResultStore\AzureTestResultDatabase.cs" />
     <Compile Include="ResultStore\TestResultService.cs" />
+    <Compile Include="Run.cs" />
     <Compile Include="Test.cs" />
     <Compile Include="TestConfiguration.cs" />
     <Compile Include="TestContainer.cs" />

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using Newtonsoft.Json;
 using PerformanceDsl.ResultStore.Infrastructure;
 using PerformanceDsl.ResultStore.Infrastructure.Enums;
@@ -15,6 +17,11 @@ namespace PerformanceDsl.ResultStore
             {
                 sP.Execute();
             }
+        }
+
+        public IQueryable<Result> Get()
+        {
+            throw new NotImplementedException();
         }
 
         private List<SqlParameter> SetUpResultParameters(Result result)
@@ -34,6 +41,11 @@ namespace PerformanceDsl.ResultStore
             };
 
             return sqlParameters;
+        }
+
+        public IQueryable<Result> Get(Guid guid)
+        {
+            throw new NotImplementedException();
         }
 
         private Result SetUpResult(SqlDataReader reader)

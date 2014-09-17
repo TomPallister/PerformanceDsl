@@ -1,4 +1,8 @@
-﻿namespace PerformanceDsl.ResultStore
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace PerformanceDsl.ResultStore
 {
     public class TestResultService : ITestResultService
     {
@@ -13,5 +17,16 @@
         {
             _testResultDatabase.Store(result);
         }
+
+        public IQueryable<Result> Get()
+        {
+           return _testResultDatabase.Get();
+        }
+
+        public IQueryable<Result> Get(Guid guid)
+        {
+            return _testResultDatabase.Get(guid);
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Text;
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace PerformanceDsl
@@ -11,7 +12,7 @@ namespace PerformanceDsl
         }
 
         public ResultEntity(HttpStatusCode httpStatusCode,
-            string currentHtml,
+            byte[] currentHtml,
             long elapsedTimeInMilliseconds,
             HttpPostMethod httpPostMethod,
             string url,
@@ -24,10 +25,10 @@ namespace PerformanceDsl
             RowKey = Guid.NewGuid().ToString();
             Timestamp = DateTime.Now;
             Date = date;
-            HttpStatusCode = httpStatusCode;
+            HttpStatusCode = httpStatusCode.ToString();
             CurrentHtml = currentHtml;
             ElapsedTimeInMilliseconds = elapsedTimeInMilliseconds;
-            HttpPostMethod = httpPostMethod;
+            HttpPostMethod = httpPostMethod.ToString();
             Url = url;
             ScenarioName = scenarioName;
             TestRunGuid = testRunGuid;
@@ -40,13 +41,13 @@ namespace PerformanceDsl
 
         public DateTime Date { get; set; }
 
-        public HttpStatusCode HttpStatusCode { get; set; }
+        public string HttpStatusCode { get; set; }
 
-        public string CurrentHtml { get; set; }
+        public byte[] CurrentHtml { get; set; }
 
         public long ElapsedTimeInMilliseconds { get; set; }
 
-        public HttpPostMethod HttpPostMethod { get; set; }
+        public string HttpPostMethod { get; set; }
         public string Url { get; set; }
 
         public string ScenarioName { get; set; }

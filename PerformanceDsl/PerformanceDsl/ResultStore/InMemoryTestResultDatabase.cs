@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PerformanceDsl.ResultStore
 {
@@ -9,6 +11,16 @@ namespace PerformanceDsl.ResultStore
         public void Store(Result result)
         {
             _results.Add(result);
+        }
+
+        public IQueryable<Result> Get()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IQueryable<Result> Get(Guid guid)
+        {
+            throw new NotImplementedException();
         }
     }
 }
