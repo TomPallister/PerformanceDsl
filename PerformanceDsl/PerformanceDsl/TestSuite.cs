@@ -13,5 +13,7 @@ namespace PerformanceDsl
         public List<Test> Tests { get; set; }
 
         public List<string> DllsThatNeedUploadingToAgent { get; set; } 
+
+        public string ProjectName { get; set; }
     }
 }

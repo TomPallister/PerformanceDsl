@@ -8,15 +8,15 @@ namespace PerformanceDsl
         {
         }
 
-        public Run(string testRunGuid, string url, DateTime startDate)
+        public Run(string testRunGuid, string projectNmae, DateTime startDate)
         {
             TestRunGuid = testRunGuid;
-            Url = url;
+            ProjectName = projectNmae;
             StartDate = startDate;
         }
 
-        public string TestRunGuid { get; private set; }
-        public string Url { get; private set; }
-        public DateTime StartDate { get; private set; }
+        public string TestRunGuid { get; set; }
+        public string ProjectName { get; set; }
+        public DateTime StartDate { get; set; }
     }
 }

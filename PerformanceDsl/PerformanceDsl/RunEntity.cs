@@ -9,17 +9,17 @@ namespace PerformanceDsl
         {
         }
 
-        public RunEntity(string testRunGuid, string url, DateTime startDate)
+        public RunEntity(string testRunGuid, string projectName, DateTime startDate)
         {
             PartitionKey = Guid.NewGuid().ToString();
             RowKey = Guid.NewGuid().ToString();
             TestRunGuid = testRunGuid;
-            Url = url;
+            ProjectName = projectName;
             StartDate = startDate;
         }
 
         public string TestRunGuid { get; set; }
-        public string Url { get; set; }
+        public string ProjectName { get; set; }
         public DateTime StartDate { get; set; }
     }
 }

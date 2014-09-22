@@ -13,12 +13,12 @@ namespace PerformanceDsl.ResultStore
             _results.Add(result);
         }
 
-        public IQueryable<Result> Get()
+        public List<Result> Get()
         {
             throw new NotImplementedException();
         }
 
-        public IQueryable<Result> Get(Guid guid)
+        public List<Result> Get(Guid guid)
         {
             throw new NotImplementedException();
         }

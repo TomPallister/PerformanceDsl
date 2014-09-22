@@ -18,12 +18,12 @@ namespace PerformanceDsl.ResultStore
             _testResultDatabase.Store(result);
         }
 
-        public IQueryable<Result> Get()
+        public List<Result> Get()
         {
            return _testResultDatabase.Get();
         }
 
-        public IQueryable<Result> Get(Guid guid)
+        public List<Result> Get(Guid guid)
         {
             return _testResultDatabase.Get(guid);
         }

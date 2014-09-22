@@ -23,7 +23,7 @@ namespace PerformanceDsl
             get
             {
                 return _testConfiguration;
-                ;
+                
             }
         }
     }

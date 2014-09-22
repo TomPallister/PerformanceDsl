@@ -7,7 +7,7 @@ namespace PerformanceDsl.ResultStore
     public interface ITestResultService
     {
         void Store(Result result);
-        IQueryable<Result> Get();
-        IQueryable<Result> Get(Guid guid);
+        List<Result> Get();
+        List<Result> Get(Guid guid);
     }
 }

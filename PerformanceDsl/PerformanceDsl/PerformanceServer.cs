@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -29,14 +30,14 @@ namespace PerformanceDsl
             var ec2Client = new AmazonEC2Client(RegionEndpoint.EUWest1);
             Log4NetLogger.LogEntry(GetType(), "BeginTestRun", "created EC2 client, now assiging ips", LoggerLevel.Info);
             List<string> instanceIds = AssignAgentIps(ec2Client, testSuite);
-            Log4NetLogger.LogEntry(GetType(), "BeginTestRun", "assigned ips if there were any required, about to run tests", LoggerLevel.Info);
+            Log4NetLogger.LogEntry(GetType(), "BeginTestRun",
+                "assigned ips if there were any required, about to run tests", LoggerLevel.Info);
             //now we need to send our dlls to the agents
             UploadDllsToAgents(testSuite);
-
-
             //once we are all good we run the tests. 
             await Run(testSuite);
-            Log4NetLogger.LogEntry(GetType(), "BeginTestRun", "tests have finished running, now terminate any agents", LoggerLevel.Info);
+            Log4NetLogger.LogEntry(GetType(), "BeginTestRun", "tests have finished running, now terminate any agents",
+                LoggerLevel.Info);
             //we return null from AssignAgentIps if we dont need any IPs, bad programming but it will do 
             //for now.
             if (instanceIds != null)
@@ -52,12 +53,12 @@ namespace PerformanceDsl
         {
             if (testSuite.DllsThatNeedUploadingToAgent.Count > 0)
             {
-                var agentIps = testSuite.Tests.Select(x => x.Agent);
-                foreach (var agentIp in agentIps)
+                IEnumerable<string> agentIps = testSuite.Tests.Select(x => x.Agent);
+                foreach (string agentIp in agentIps)
                 {
-                    foreach (var dll in testSuite.DllsThatNeedUploadingToAgent)
+                    foreach (string dll in testSuite.DllsThatNeedUploadingToAgent.Distinct())
                     {
-                        var fileName = GetFileName(dll);
+                        string fileName = GetFileName(dll);
 
                         UploadFile(fileName, string.Format("http://{0}:9999", agentIp), dll);
                     }
@@ -76,8 +77,8 @@ namespace PerformanceDsl
 
         private string GetFileName(string filePath)
         {
-            var lastIndex = filePath.LastIndexOf("\\", StringComparison.Ordinal);
-            var fileName = filePath.Substring(lastIndex + 1);
+            int lastIndex = filePath.LastIndexOf("\\", StringComparison.Ordinal);
+            string fileName = filePath.Substring(lastIndex + 1);
             return fileName;
         }
 
@@ -95,7 +96,6 @@ namespace PerformanceDsl
             //wait for all the tasks to finish
             await Task.WhenAll(tasks);
             Log4NetLogger.LogEntry(GetType(), "Run", "all tasks finished returning", LoggerLevel.Info);
-
         }
 
         private void TerminateAgents(AmazonEC2Client ec2Client, List<string> instanceIds)
@@ -228,6 +228,44 @@ namespace PerformanceDsl
                         agent.IsReady = true;
                     }
                 }
+            }
+        }
+
+        public async Task LogTestRun(Guid guid, string projectName)
+        {
+            var run = new Run
+            {
+                StartDate = DateTime.Now,
+                TestRunGuid = guid.ToString(),
+                ProjectName = projectName
+            };
+            using (var httpClient = new HttpClient())
+            {
+                string url = string.Format("{0}api/run", ConfigurationManager.AppSettings.Get("ApiUrl"));
+                Log4NetLogger.LogEntry(GetType(), "Log", url, LoggerLevel.Info);
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                string json = JsonConvert.SerializeObject(run);
+                var content = new StringContent(json);
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                HttpResponseMessage result =
+                    await httpClient.PostAsync(url, content);
+                try
+                {
+                    result.EnsureSuccessStatusCode();
+                }
+                catch (Exception exception)
+                {
+                    Log4NetLogger.LogEntry(GetType(), "Log", url, LoggerLevel.Info, exception);
+                }
+            }
+        }
+
+
+        public void SetUpTestRunIdentifier(TestSuite testSuite, Guid guid)
+        {
+            foreach (Test test in testSuite.Tests)
+            {
+                test.TestRun.TestRunIdentifier = guid;
             }
         }
     }

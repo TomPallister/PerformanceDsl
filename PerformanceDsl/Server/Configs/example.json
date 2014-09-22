@@ -18,8 +18,7 @@
             "NameSpace": "Fourth.R9.PerformanceTests.AllTests"
           }
         ],
-        "DllThatContainsTestsPath": "C:\\git\\TestPerformance\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\bin\\Debug\\Fourth.R9.PerformanceTests.dll",
-        "TestRunIdentifier": "73b4d3e0-29dd-40d4-b9c7-dc00ffd7f20f"
+        "DllThatContainsTestsPath": "C:\\git\\TestPerformance\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\bin\\Debug\\Fourth.R9.PerformanceTests.dll"
       },
       "Agent": "127.0.0.1"
     },
@@ -28,14 +27,13 @@
         "TestConfigurations": [
           {
             "RampUpPeriodInSeconds": 5,
-            "MainRunPeriodInSeconds": 20,
+            "MainRunPeriodInSeconds": 40,
             "Users": 20,
             "MethodName": "can_create_purchase_order",
             "NameSpace": "Fourth.R9.PerformanceTests.LoginTests"
           }
         ],
-        "DllThatContainsTestsPath": "C:\\git\\TestPerformance\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\bin\\Debug\\Fourth.R9.PerformanceTests.dll",
-        "TestRunIdentifier": "73b4d3e0-29dd-40d4-b9c7-dc00ffd7f20f"
+        "DllThatContainsTestsPath": "C:\\git\\TestPerformance\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\bin\\Debug\\Fourth.R9.PerformanceTests.dll"
       },
       "Agent": "127.0.0.1"
     }
@@ -43,5 +41,6 @@
   "DllsThatNeedUploadingToAgent": [
     "C:\\git\\TestPerformance\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\bin\\Debug\\Fourth.R9.PerformanceTests.dll",
     "C:\\git\\TestPerformance\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\Fourth.R9.PerformanceTests\\bin\\Debug\\Fourth.R9.Domain.dll"
-  ]
+  ],
+  "ProjectName": "R9"
 }

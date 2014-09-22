@@ -11,10 +11,8 @@ namespace PerformanceDsl.ResultStore
     {
         private readonly CloudTable _cloudTable;
 
-        public AzureTestRunDatabase()
+        public AzureTestRunDatabase(CloudStorageAccount storageAccount)
         {
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
-                ConfigurationManager.ConnectionStrings["StorageConnectionString"].ConnectionString);
             CloudTableClient cloudTableClient = storageAccount.CreateCloudTableClient();
             _cloudTable = cloudTableClient.GetTableReference(ConfigurationManager.AppSettings["TestRunTableName"]);
             _cloudTable.CreateIfNotExists();
@@ -22,7 +20,7 @@ namespace PerformanceDsl.ResultStore
 
         public void Store(Run run)
         {
-            var runEntity = new RunEntity(run.TestRunGuid, run.Url, run.StartDate);
+            var runEntity = new RunEntity(run.TestRunGuid, run.ProjectName, run.StartDate);
             TableOperation insertOperation = TableOperation.Insert(runEntity);
             _cloudTable.Execute(insertOperation);
         }
@@ -34,7 +32,7 @@ namespace PerformanceDsl.ResultStore
                 select entity;
             foreach (RunEntity resultEntity in query)
             {
-                var run = new Run(resultEntity.TestRunGuid, resultEntity.Url,
+                var run = new Run(resultEntity.TestRunGuid, resultEntity.ProjectName,
                     resultEntity.StartDate);
                 runs.Add(run);
             }

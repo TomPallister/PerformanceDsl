@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Net;
@@ -12,10 +13,8 @@ namespace PerformanceDsl.ResultStore
     {
         private readonly CloudTable _cloudTable;
 
-        public AzureTestResultDatabase()
+        public AzureTestResultDatabase(CloudStorageAccount storageAccount)
         {
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
-                ConfigurationManager.ConnectionStrings["StorageConnectionString"].ConnectionString);
             CloudTableClient cloudTableClient = storageAccount.CreateCloudTableClient();
             _cloudTable = cloudTableClient.GetTableReference(ConfigurationManager.AppSettings["TableName"]);
             _cloudTable.CreateIfNotExists();
@@ -57,28 +56,33 @@ namespace PerformanceDsl.ResultStore
             }
         }
 
-        public IQueryable<Result> Get()
+        public List<Result> Get()
         {
-            IQueryable<ResultEntity> query = from entity in _cloudTable.CreateQuery<ResultEntity>()
-                select entity;
+            IQueryable<Result> query = from entity in _cloudTable.CreateQuery<ResultEntity>()
+                select
+                    new Result((HttpStatusCode) Enum.Parse(typeof (HttpStatusCode), entity.HttpStatusCode),
+                        StringCompression.Unzip(entity.CurrentHtml),
+                        entity.ElapsedTimeInMilliseconds,
+                        (HttpPostMethod) Enum.Parse(typeof (HttpPostMethod), entity.HttpPostMethod), entity.Url,
+                        entity.ScenarioName, entity.TestRunGuid, entity.StepName, entity.Date);
 
-            IQueryable<Result> results = from resultEntity in query
-                                         select new Result((HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), resultEntity.HttpStatusCode), StringCompression.Unzip(resultEntity.CurrentHtml),
-                    resultEntity.ElapsedTimeInMilliseconds, (HttpPostMethod)Enum.Parse(typeof(HttpPostMethod), resultEntity.HttpPostMethod), resultEntity.Url,
-                    resultEntity.ScenarioName, resultEntity.TestRunGuid, resultEntity.StepName, resultEntity.Date);
-            return results;
+
+            return query.ToList();
         }
 
-        public IQueryable<Result> Get(Guid guid)
+        public List<Result> Get(Guid guid)
         {
-            IQueryable<ResultEntity> query = from entity in _cloudTable.CreateQuery<ResultEntity>()
+            IQueryable<Result> query = from entity in _cloudTable.CreateQuery<ResultEntity>()
                 where entity.TestRunGuid == guid
-                select entity;
-            IQueryable<Result> results = from resultEntity in query
-                                         select new Result((HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), resultEntity.HttpStatusCode), StringCompression.Unzip(resultEntity.CurrentHtml),
-                    resultEntity.ElapsedTimeInMilliseconds, (HttpPostMethod)Enum.Parse(typeof(HttpPostMethod), resultEntity.HttpPostMethod), resultEntity.Url,
-                    resultEntity.ScenarioName, resultEntity.TestRunGuid, resultEntity.StepName, resultEntity.Date);
-            return results;
+                select
+                    new Result((HttpStatusCode) Enum.Parse(typeof (HttpStatusCode), entity.HttpStatusCode),
+                        StringCompression.Unzip(entity.CurrentHtml),
+                        entity.ElapsedTimeInMilliseconds,
+                        (HttpPostMethod) Enum.Parse(typeof (HttpPostMethod), entity.HttpPostMethod), entity.Url,
+                        entity.ScenarioName, entity.TestRunGuid, entity.StepName, entity.Date);
+
+
+            return query.ToList();
         }
     }
 }

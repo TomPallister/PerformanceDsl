@@ -30,33 +30,47 @@ namespace PerformanceDsl.ResultStore
         {
             var rowSummaries = new List<RowSummary>();
             //get out data
-            List<Result> results = _testResultDatabase.Get(guid).ToList();
-            //this sets up the combined results and we basically do the same for each step next
-            var combined = new RowSummary("Combined", results.Count(),
-                results.Max(x => x.ElapsedTimeInMilliseconds), results.Average(x => x.ElapsedTimeInMilliseconds),
-                results.Min(x => x.ElapsedTimeInMilliseconds),
-                results.Count(
-                    x =>
-                        x.HttpStatusCode != HttpStatusCode.Accepted && x.HttpStatusCode != HttpStatusCode.Created &&
-                        x.HttpStatusCode != HttpStatusCode.OK && x.HttpStatusCode != HttpStatusCode.Redirect));
-            rowSummaries.Add(combined);
-            //do the same for each step
-            foreach (var result in results.GroupBy(x => x.StepName))
+            List<Result> data = _testResultDatabase.Get(guid);
+            if (data.Any())
             {
-                string stepName = result.Select(x => x.StepName).FirstOrDefault();
-                int count = result.Count();
-                double maximum = result.Max(x => x.ElapsedTimeInMilliseconds);
-                double mean = result.Average(x => x.ElapsedTimeInMilliseconds);
-                double minmum = result.Min(x => x.ElapsedTimeInMilliseconds);
-                int errors = result.Count(
-                    x =>
-                        x.HttpStatusCode != HttpStatusCode.Accepted && x.HttpStatusCode != HttpStatusCode.Created &&
-                        x.HttpStatusCode != HttpStatusCode.OK && x.HttpStatusCode != HttpStatusCode.Redirect);
-                var rowSummary = new RowSummary(stepName, count, maximum, mean, minmum, errors);
-                rowSummaries.Add(rowSummary);
-            }
+                List<Result> results = data.ToList();
+                //this sets up the combined results and we basically do the same for each step next
+                var combined = new RowSummary("Combined", results.Count(),
+                    Math.Round(results.Max(x => ConvertMillisecondsToSeconds(x.ElapsedTimeInMilliseconds)), 2),
+                    Math.Round(results.Average(x => ConvertMillisecondsToSeconds(x.ElapsedTimeInMilliseconds)), 2),
+                    Math.Round(results.Min(x => ConvertMillisecondsToSeconds(x.ElapsedTimeInMilliseconds)), 2),
+                    results.Count(
+                        x =>
+                            x.HttpStatusCode != HttpStatusCode.Accepted && x.HttpStatusCode != HttpStatusCode.Created &&
+                            x.HttpStatusCode != HttpStatusCode.OK && x.HttpStatusCode != HttpStatusCode.Redirect));
+                rowSummaries.Add(combined);
+                //do the same for each step
+                foreach (var result in results.GroupBy(x => x.StepName))
+                {
+                    string stepName = result.Select(x => x.StepName).FirstOrDefault();
+                    int count = result.Count();
+                    double maximum = result.Max(x => ConvertMillisecondsToSeconds(x.ElapsedTimeInMilliseconds));
+                    maximum = Math.Round(maximum, 2);
+                    double mean = result.Average(x => ConvertMillisecondsToSeconds(x.ElapsedTimeInMilliseconds));
+                    mean = Math.Round(mean, 2);
+                    double minmum = result.Min(x => ConvertMillisecondsToSeconds(x.ElapsedTimeInMilliseconds));
+                    minmum = Math.Round(minmum, 2);
+                    int errors = result.Count(
+                        x =>
+                            x.HttpStatusCode != HttpStatusCode.Accepted && x.HttpStatusCode != HttpStatusCode.Created &&
+                            x.HttpStatusCode != HttpStatusCode.OK && x.HttpStatusCode != HttpStatusCode.Redirect);
+                    var rowSummary = new RowSummary(stepName, count, maximum, mean, minmum, errors);
+                    rowSummaries.Add(rowSummary);
+                }
 
-            return new RunSummary(rowSummaries);
+                return new RunSummary(rowSummaries);
+            }
+            return null;
+        }
+
+        public double ConvertMillisecondsToSeconds(double milliseconds)
+        {
+            return TimeSpan.FromMilliseconds(milliseconds).TotalSeconds;
         }
     }
 }

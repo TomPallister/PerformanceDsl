@@ -19,7 +19,7 @@ namespace PerformanceDsl.ResultStore
             }
         }
 
-        public IQueryable<Result> Get()
+        public List<Result> Get()
         {
             throw new NotImplementedException();
         }
@@ -43,7 +43,7 @@ namespace PerformanceDsl.ResultStore
             return sqlParameters;
         }
 
-        public IQueryable<Result> Get(Guid guid)
+        public List<Result> Get(Guid guid)
         {
             throw new NotImplementedException();
         }

@@ -2,37 +2,100 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>First One To</title>
+  <title>Performance Test Results</title>
   <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
   <link rel="stylesheet" href="font-awesome-4.1.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="performanceresultsapp.css">
-
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 </head>
 <body>
 
-<script type="text/x-handlebars" id="index">
+  <script type="text/x-handlebars" id="index">
+    <div class="container">
+    <div class="well well-lg top-buffer">
+      <p class="lead">Please log in with your username and password.</p>
+        <div class="row top-buffer">
+          <form role="form" {{action "login" on="submit"}}>
+            {{#if loginFailed}}
+              <div class="alert alert-warning text-center">There was a problem with the email address or password you used, please double check these details and try again</div>
+            {{/if}}
+            {{#if isSlowConnection}}
+              <div class="alert alert-info text-center">The request seems to be taking more time than usual, please wait.</div>
+            {{/if}}
+            <div class="form-group">
+                {{input value=username id="username" type="text" class="form-control" placeholder="Username"}}
+            </div>
+            <div class="form-group">
+                {{input value=password id="password" type="password" class="form-control" placeholder="Password"}}
+            </div> 
+            <div class="form-group">
+              <button class="btn btn-primary btn-block" type="submit" {{bindAttr disabled="isProcessing"}}>Log in!</button>
+             </div>
+          </form>
+        </div>
+      </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars" id="runs">
   <div class="container">
-    <ul>
-      {{#each}}
-        <li>
-          {{#link-to 'run' TestRunGuid}}
-              {{TestRunGuid}} & {{Url}} & {{StartDate}}</li>
-          {{/link-to}}  
-      {{/each}}
-    </ul>
+    <div class="well well-lg top-buffer">
+      <div class="row">
+        <div class="col-xs-12">
+          <table class="table table-striped table-condensed">
+            <tbody>
+              <tr>
+                <th>ProjectName</th>
+                <th>StartDate</th>
+              </tr>
+              {{#each}}
+                  <tr>
+                    <td>                      
+                      {{#link-to 'run' TestRunGuid}}
+                        {{ProjectName}}
+                      {{/link-to}}  
+                    </td>
+                    <td>{{StartDate}}</td>
+                  </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div> 
 </script>
 
 <script type="text/x-handlebars" id="run">
   <div class="container">
-    <ul>
-      {{#each}}
-        <li>
-          {{TestRunGuid}}
-        </li>
-      {{/each}}
-    </ul>
+    <div class="well well-lg top-buffer">
+      <div class="row">
+        <div class="col-xs-12">
+          <table class="table table-striped table-condensed">
+            <tbody>
+              <tr>
+                <th>StepName</th>
+                <th>Count</th>
+                <th>Maximum</th>    
+                <th>Mean</th>
+                <th>Minimum</th>
+                <th>Errors</th>
+              </tr>
+              {{#each}}
+                <tr>
+                  <td>{{StepName}}</td>
+                  <td>{{Count}}</td>
+                  <td>{{Maximum}}</td>    
+                  <td>{{Mean}}</td>
+                  <td>{{Minimum}}</td>
+                  <td>{{Errors}}</td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div> 
 </script>
 
@@ -53,6 +116,6 @@
 <script src="loading-overlay.min.js"></script>
 <script src="passwordstrength/pwstrength-bootstrap-1.2.0.min.js"></script>
 <script src="jquery.scrollTo.min.js"></script>
-
+<script src="moment.js"></script>
 </body>
 </html>

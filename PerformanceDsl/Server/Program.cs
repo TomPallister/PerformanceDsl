@@ -24,7 +24,11 @@ namespace Server
             Log4NetLogger.LogEntry(typeof(Program), "Main", "creating performance server", LoggerLevel.Info);
             var performanceServer = new PerformanceServer();
             Log4NetLogger.LogEntry(typeof(Program), "Main", "beginning test run", LoggerLevel.Info);
-            var task = Task.Run(() => performanceServer.BeginTestRun(testSuite));
+            var guid = Guid.NewGuid();
+            performanceServer.SetUpTestRunIdentifier(testSuite, guid);        
+            var task = Task.Run(() => performanceServer.LogTestRun(guid, testSuite.ProjectName));
+            task.Wait();
+            task = Task.Run(() => performanceServer.BeginTestRun(testSuite));
             Log4NetLogger.LogEntry(typeof(Program), "Main", "waiting for tests to end", LoggerLevel.Info);
             task.Wait();
             Log4NetLogger.LogEntry(typeof(Program), "Main", "all tests have ended", LoggerLevel.Info);
